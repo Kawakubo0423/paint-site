@@ -116,7 +116,7 @@ export default function Home() {
           >
             <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-wider leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
               描いた絵が、<span className="text-yellow-400">動き出す。</span><br />
-              キミだけの最強モンスター！
+              キミだけのイキモノを創り出せ！
             </h1>
             <p className="text-lg md:text-xl text-white font-bold bg-slate-900/50 inline-block px-8 py-3 rounded-full backdrop-blur-sm border border-white/20">
               アーケード筐体 × 生成AI × 心理戦バトル
