@@ -115,8 +115,8 @@ export default function Home() {
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-wider leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-              描いた絵が、<span className="text-yellow-400">動き出す。</span><br />
-              キミだけのイキモノを創り出せ！
+              描いた絵が、動き出す。<br />
+              キミだけの<span className="text-yellow-400">イキモノ</span>を創り出せ！
             </h1>
             <p className="text-lg md:text-xl text-white font-bold bg-slate-900/50 inline-block px-8 py-3 rounded-full backdrop-blur-sm border border-white/20">
               アーケード筐体 × 生成AI × 心理戦バトル
@@ -159,7 +159,7 @@ export default function Home() {
                 新感覚アーケードゲーム。
               </h3>
               <p className="text-lg text-slate-600 leading-8">
-                「pAInt（ペイント）」は、自分だけのモンスターを描いて戦わせる対戦ゲーム。
+                「pAInt（ペイント）」は、自分だけのイキモノを描いて戦わせるシリアス対戦ゲーム。
                 最大の特徴は、<span className="font-bold text-blue-500">自作のアーケード筐体</span>と<span className="font-bold text-blue-500">生成AI</span>の融合です。
               </p>
               <ul className="space-y-3">
