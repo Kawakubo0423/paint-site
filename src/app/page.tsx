@@ -53,7 +53,7 @@ const COLORS = ["#ffcc00", "#e2e8f0"];
 const achievementPhotos = [
   { src: "/images/event1.jpg", alt: "イベントで遊ぶ参加者", caption: "オープンキャンパスでの様子" },
   { src: "/images/event2.jpg", alt: "コンテスト受賞", caption: "技育博2025(vol.2) 企業賞受賞" },
-  { src: "/images/event3.jpg", alt: "廊下での展示", caption: "現在も大学内に設置" },
+  { src: "/images/event3.jpg", alt: "廊下での展示", caption: "一から筐体を手作り" },
 ];
 
 

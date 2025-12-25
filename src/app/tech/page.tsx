@@ -144,7 +144,7 @@ export default function TechDetail() {
 
           {/* 4. Software (新提案：構成図を左に、解説カードを右に縦並び) */}
           <div>
-            <SubHeader emoji="⚡">Software: 複雑なロジックを統合する</SubHeader>
+            <SubHeader emoji="⚡">Software: 複雑なロジックの統合</SubHeader>
             <div className="grid lg:grid-cols-12 gap-8 items-stretch">
               
               {/* システム構成図 (左側 7カラム) */}
@@ -154,7 +154,7 @@ export default function TechDetail() {
                 
                 <div className="flex-grow flex items-center justify-center relative group">
                   <div className="absolute -inset-4 bg-gradient-to-r from-blue-50 to-slate-50 rounded-[40px] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                  <Image src="/images/diagram.png" alt="Architecture" width={800} height={500} className="relative rounded-[40px] shadow-md bg-white/50 p-6" />
+                  <Image src="/images/system_diagram.png" alt="Architecture" width={450} height={150} className="relative rounded-[40px] shadow-md bg-white/50 p-6" />
                 </div>
                 
                 {/* <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -171,24 +171,24 @@ export default function TechDetail() {
               <div className="lg:col-span-5 flex flex-col gap-6">
                 <DetailCard title="Frontend" color="border-green-500 text-green-600">
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">Unity / C#</span>
-                  <p className="font-bold text-slate-800 text-sm mb-2">ステートマシンによるゲーム制御</p>
-                  <p className="text-[11px] leading-relaxed font-bold">
+                  {/* <p className="font-bold text-slate-800 text-sm mb-2">ステートマシンによるゲーム制御</p> */}
+                  <p className="text-[15px] leading-relaxed font-bold">
                     お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。
                   </p>
                 </DetailCard>
 
                 <DetailCard title="Backend" color="border-blue-500 text-blue-600">
                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">GAS / Google Drive / Google Sheets / LINE API / Slack API</span>
-                   <p className="font-bold text-slate-800 text-sm mb-2">運用を支えるリアルタイム基盤</p>
-                   <p className="text-[11px] leading-relaxed font-bold">
+                   {/* <p className="font-bold text-slate-800 text-sm mb-2">運用を支えるリアルタイム基盤</p> */}
+                   <p className="text-[15px] leading-relaxed font-bold">
                     GASを核にLINE Messaging APIを連携。図鑑のスマホ送信機能を構築。さらにSlack APIと連携し、プレイ状況を監視することで公共の場での安定稼働を技術面で支えています。
                    </p>
                 </DetailCard>
 
                 <DetailCard title="AI Integration" color="border-purple-500 text-purple-600">
                   <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">OpenAI API/ GPT-4o</span>
-                  <p className="font-bold text-slate-800 text-sm mb-2">納得感を生む思考ロジック</p>
-                  <p className="text-[11px] leading-relaxed font-bold">
+                  {/* <p className="font-bold text-slate-800 text-sm mb-2">納得感を生む思考ロジック</p> */}
+                  <p className="text-[15px] leading-relaxed font-bold">
                     gpt-4-vision-previewを活用した画像解析。判断理由を論理的に説明するためのプロンプト最適化に注力。納得感のあるフィードバックを生成するアルゴリズムを開発しました。
                   </p>
                 </DetailCard>
