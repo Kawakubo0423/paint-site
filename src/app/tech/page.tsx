@@ -2,292 +2,293 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 // --- 小見出しコンポーネント ---
 const SubHeader = ({ children, emoji }: { children: string; emoji: string }) => (
-  <h2 className="text-2xl md:text-4xl font-black mb-12 border-l-[16px] border-blue-500 pl-6 flex items-center gap-4 text-slate-800 tracking-tighter">
-    <span className="text-5xl">{emoji}</span> {children}
-  </h2>
+  <motion.div 
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    className="relative mb-16"
+  >
+    <h2 className="text-3xl md:text-5xl font-black flex items-center gap-6 text-slate-800 tracking-tighter">
+      <span className="text-6xl drop-shadow-lg">{emoji}</span> {children}
+    </h2>
+    <motion.div 
+      initial={{ width: 0 }}
+      whileInView={{ width: "100%" }}
+      transition={{ delay: 0.5, duration: 0.8 }}
+      className="h-2 bg-gradient-to-r from-blue-500 to-transparent mt-4 rounded-full"
+    />
+  </motion.div>
 );
 
 // --- こだわりカードコンポーネント ---
-const DetailCard = ({ title, children, color }: { title: string; children: React.ReactNode; color: string }) => (
-  <div className={`p-8 rounded-[40px] border-4 ${color} bg-white/60 backdrop-blur-md shadow-xl h-full flex flex-col hover:scale-[1.02] transition-transform duration-300`}>
-    <h3 className="text-xl font-black mb-4 italic flex items-center gap-2">
-      <span className="w-3 h-3 rounded-full bg-current"></span> {title}
+const DetailCard = ({ title, children, color, isCompact = false }: { title: string; children: React.ReactNode; color: string; isCompact?: boolean }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    whileHover={{ y: -10 }}
+    className={`
+      px-8 rounded-[50px] bg-white/40 backdrop-blur-xl border-2 ${color}
+      shadow-[0_20px_50px_rgba(0,0,0,0.03)]
+      h-full flex flex-col transition-all duration-500 group
+      ${isCompact ? 'py-8 min-h-0' : 'py-12 min-h-[520px]'}
+    `}
+  >
+    <h3 className={`font-black mb-6 italic flex items-center gap-3 leading-tight group-hover:scale-105 transition-transform duration-300 ${isCompact ? 'text-xl' : 'text-2xl xl:text-3xl'} ${color.replace('border-', 'text-')}`}>
+      <span className="w-5 h-5 rounded-full bg-current shadow-[0_0_15px_rgba(0,0,0,0.1)]"></span>
+      <span className={isCompact ? '' : 'whitespace-nowrap'}>{title}</span>
     </h3>
-    <div className="text-slate-600 font-bold leading-relaxed text-sm space-y-3 flex-grow">
+    <div className={`text-slate-700 font-bold space-y-4 flex-grow text-justify ${isCompact ? 'text-[14px] leading-relaxed' : 'text-[18px] leading-[2.0]'}`}>
       {children}
     </div>
-  </div>
+  </motion.div>
 );
 
 export default function TechDetail() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
   return (
-    <main className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans selection:bg-yellow-200 relative overflow-hidden">
+    // mainの背景を透明にして、背面のインクを見せる
+    <main className="min-h-screen bg-transparent text-slate-800 font-sans selection:bg-yellow-200 relative overflow-x-hidden font-bold">
       
-      {/* --- 背景アレンジ：pAIntらしいインクの滲み演出 --- */}
-      <div className="absolute top-[5%] right-[-10%] w-[600px] h-[600px] bg-blue-300/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
-      <div className="absolute bottom-[5%] left-[-10%] w-[700px] h-[700px] bg-red-300/20 rounded-full blur-[150px] -z-10 animate-pulse transition-all duration-[4s]"></div>
-      <div className="absolute top-[35%] left-[0%] w-[500px] h-[500px] bg-yellow-300/25 rounded-full blur-[110px] -z-10 animate-pulse delay-700"></div>
-      <div className="absolute top-[65%] right-[5%] w-[450px] h-[450px] bg-blue-200/20 rounded-full blur-[100px] -z-10 animate-pulse delay-1000"></div>
+      {/* --- スクロールプログレスバー --- */}
+      <motion.div className="fixed top-0 left-0 right-0 h-2 bg-blue-500 origin-left z-[100]" style={{ scaleX }} />
+
+      {/* --- 最背面レイヤー：背景色と動くインク --- */}
+      <div className="fixed inset-0 -z-20 bg-[#fcfdff]" /> {/* ベースの背景色 */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        {/* 青のインク */}
+        <motion.div 
+          animate={{ 
+            y: [0, 40, 0],
+            x: [0, 20, 0],
+            scale: [1, 1.1, 1] 
+          }} 
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-400/15 rounded-full blur-[100px] will-change-transform" 
+        />
+        {/* 赤のインク */}
+        <motion.div 
+          animate={{ 
+            y: [0, -50, 0],
+            x: [0, -30, 0],
+            scale: [1, 1.2, 1] 
+          }} 
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-[-5%] left-[-5%] w-[700px] h-[700px] bg-red-400/10 rounded-full blur-[120px] will-change-transform" 
+        />
+        {/* 黄のインク */}
+        <motion.div 
+          animate={{ 
+            opacity: [0.4, 0.7, 0.4],
+            scale: [1, 1.1, 1]
+          }} 
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[30%] left-[10%] w-[400px] h-[400px] bg-yellow-300/20 rounded-full blur-[90px] will-change-transform" 
+        />
+      </div>
 
       {/* --- ナビゲーション --- */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/60 backdrop-blur-xl border-b border-slate-200/50 p-4">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-blue-500 font-black flex items-center gap-2 hover:scale-105 transition-transform text-lg">
-            ← TOP PAGE
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/20 backdrop-blur-xl border-b border-white/30 p-5">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link href="/" className="text-blue-600 font-black flex items-center gap-3 hover:scale-105 transition-transform text-xl group">
+            <span className="group-hover:-translate-x-1 transition-transform font-sans">←</span> TOP PAGE
           </Link>
-          <span className="text-xs font-black text-slate-400 tracking-[0.4em] uppercase">Development Story</span>
+          <div className="text-right">
+            <span className="text-[10px] font-black text-slate-400 tracking-[0.5em] uppercase block">Development Story</span>
+            <span className="text-[10px] font-black text-blue-500 uppercase">Interactive Report</span>
+          </div>
         </div>
       </nav>
 
       {/* --- ヒーローエリア --- */}
-      <header className="pt-48 pb-32 px-4 text-center relative z-10">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <h1 className="text-5xl md:text-8xl font-black mb-10 leading-[1.05] tracking-tight text-slate-900">
-            AIとアーケードゲームで、<br /><span className="text-blue-500">「新たな体験」</span>をカタチに。
+      <header className="pt-64 pb-48 px-4 text-center relative z-10">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+          <h1 className="text-6xl md:text-[9rem] font-black mb-12 leading-[0.85] tracking-[-0.06em] text-slate-900">
+            AI <span className="text-blue-500">PLAY</span><br />
+            EXPERIENCE.
           </h1>
-          <p className="text-xl md:text-2xl text-slate-500 font-black max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-3xl text-slate-500 font-black max-w-4xl mx-auto leading-relaxed mt-12">
             〜「pAInt」開発の裏側と、成功に至るまでの道のり〜
           </p>
+          <motion.div animate={{ y: [0, 15, 0] }} transition={{ duration: 2, repeat: Infinity }} className="mt-16 text-blue-400 text-4xl">↓</motion.div>
         </motion.div>
       </header>
 
-      <section className="pb-32 px-4 relative z-10 space-y-48 max-w-6xl mx-auto">
+      <section className="pb-64 px-4 relative z-10 space-y-64 max-w-7xl mx-auto">
           
           {/* 1. きっかけ */}
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-            <div className="bg-slate-900 text-white p-12 md:p-24 rounded-[100px] shadow-2xl relative overflow-hidden">
-              <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px]"></div>
-              <h2 className="text-3xl md:text-5xl font-black mb-12 italic border-b-4 border-blue-500 inline-block">
-                Origin: AIとの新たな向き合い方
-              </h2>
-              <div className="grid md:grid-cols-2 gap-16 text-lg font-bold leading-relaxed opacity-90 text-justify">
-                <p>
-                  生成AIの急速な普及により、高度な技術であったAIは私たちの身近な存在となりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考過程はブラックボックスのままです。しかし、これからの時代はAIの利便性や懸念点を理解した上で活用することが重要になってきます。
-                </p>
-                <p>
-                  そこで私たちは、AIの思考過程や考え方を誰もが直感的に体験できる形で可視化し、AIとの新たな向き合い方を提案したいと考えました。<br />それこそ、「多くの人が楽しめるゲーム」の中に、<span className="text-blue-400">AIへの学び</span>を取り入れた「pAInt」プロジェクトの始まりです。
-                </p>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-slate-900 text-white p-12 md:p-24 rounded-[100px] shadow-2xl relative overflow-hidden group"
+          >
+            <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
+            <h2 className="text-3xl md:text-5xl font-black mb-12 italic border-b-4 border-blue-500 inline-block">
+              Origin: AIとの新たな向き合い方
+            </h2>
+            <div className="grid md:grid-cols-2 gap-16 text-lg md:text-xl font-bold leading-relaxed opacity-90 text-justify">
+              <p>
+                　生成AIの急速な普及により、高度な技術であったAIは私たちの身近な存在となりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考過程はブラックボックスのままです。しかし、これからの時代はAIの利便性や懸念点を理解した上で活用することが重要になってきます。
+              </p>
+              <p>
+                　そこで私たちは、AIの思考過程や考え方を誰もが直感的に体験できる形で可視化し、AIとの新たな向き合い方を提案したいと考えました。<br />　これが、多くの人が楽しめる<span className="text-blue-400">ゲーム</span>の中に、<span className="text-blue-400">AIへの学び</span>を取り入れた「pAInt」プロジェクトの始まりです。
+              </p>
             </div>
           </motion.div>
 
-        {/* 2. 3つの徹底的なこだわり */}
-          <div className="relative z-10">
+          {/* 2. 3つのこだわり */}
+          <div>
             <SubHeader emoji="🎯">プロダクトを支える3つの柱</SubHeader>
             <div className="grid md:grid-cols-3 gap-10">
-              <DetailCard title="筐体という存在感" color="border-blue-500 text-blue-500">
-                <p>
-                  ネットの海に埋もれるデジタル作品ではなく、
-                  <strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">大学の廊下</span></strong>
-                  という現実空間で勝負。
-                </p>
-                <p>
-                  「面白そうなのがあるからやってみる」「偶然通った人が思わず触れてしまう」、
-                  私たちにしかできないような唯一無二で新たな体験を追求しました。
-                </p>
+              <DetailCard title="筐体という存在感" color="border-blue-500">
+                <p>　ネットの海に埋もれるデジタル作品ではなく、<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">大学の廊下</span></strong>という現実空間で勝負。アーケード筐体という形式が生む非日常性によって、通りすがりの人の好奇心を引き出し、「思わず触ってしまう」体験を生み出します。<br />　私たちはこの<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">偶発的な出会い</span></strong>をエンターテインメントとして最大化し、筐体だからこそ実現できる、唯一無二の体験価値を追求しました。</p>
               </DetailCard>
-
-              <DetailCard title="徹底したユーザ目線" color="border-red-500 text-red-500">
-                <p>
-                  当初の課題は「体験時間の長さ」や「分かりにくいUI」による離脱者の多さでした。
-                </p>
-                <p>
-                  私たちはユーザへの
-                  <strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">ヒアリングやアンケート、ログ分析</span></strong>
-                  を通じてUI/UXや体験時間を徹底的に見直し、常にユーザ目線での改善を繰り返しました。
-                </p>
+              <DetailCard title="徹底したユーザ目線" color="border-red-500">
+                <p>　当初は、想定通りには機能しない場面も多く、体験の途中で離脱してしまうユーザが少なくありませんでした。そこで私たちは、ユーザへの<strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">ヒアリングやアンケート、ログ分析</span></strong>を通じて原因を可視化し、UI/UXや体験時間を徹底的に見直しました。<br />　常に「作りたいもの」ではなく<strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">「遊ばれ続ける体験」</span></strong>を基準に改善を重ねたことが、pAIntの体験設計を支えています。</p>
               </DetailCard>
-
-              <DetailCard title="AIフィードバック" color="border-yellow-500 text-yellow-600">
-                <p>
-                  単なる「勝ち負け」で終わらせないのが最大の特徴。
-                  バトル後のAIによる言語化された判断理由を見て、ユーザはAIについての学びを深めることができます。
-                </p>
-                <p>
-                  <strong><span className="text-yellow-600 underline decoration-yellow-200 decoration-4 underline-offset-4">公式LINEで「図鑑」として持ち帰り可能</span></strong>
-                  で、遊びの学びを思い出として手元に残せます。
-                </p>
+              <DetailCard title="AIフィードバック" color="border-yellow-500">
+                <p>　単なる「勝ち負け」で終わらせないのがpAIntの最大の特徴です。バトル後のAIによる言語化された判断理由を見て、ユーザはAIについての学びをより深めることができます。<br />　さらに、<strong><span className="text-yellow-600 underline decoration-yellow-200 decoration-4 underline-offset-4">公式LINEで「図鑑」として持ち帰り可能</span></strong>で、学びを思い出として手元に残せます。</p>
               </DetailCard>
             </div>
           </div>
 
-          {/* 3. Hardware (デザイン強化：画像を右側にコンパクトに配置) */}
+          {/* 3. Hardware */}
           <div>
-            <SubHeader emoji="🪚">Hardware: 「手触り感」のある体験の設計</SubHeader>
+            <SubHeader emoji="⚙️">Hardware: 「手触り感」のある体験の設計</SubHeader>
             <div className="grid lg:grid-cols-12 gap-8 items-start">
-              
-              {/* テキストエリア (左側 7カラム) */}
-              <div className="lg:col-span-7 bg-white/40 backdrop-blur-md p-10 rounded-[60px] shadow-xl border-4 border-blue-500/10 relative overflow-hidden h-full">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
-                <p className="mb-8 italic text-slate-900 text-2xl font-black border-l-8 border-blue-500 pl-6">
-                  画面の中だけで完結させない、新たな体験を。
-                </p>
-                <div className="text-lg font-bold text-slate-600 leading-9 space-y-6">
-                  <p>
-                    ● 私たちは「通りすがりの人が、面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong>アーケード筐体そのものから設計</strong>を行いました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。
-                  </p>
-                  <p>
-                    ● 入力デバイスも、市販品ではなく<strong>3Dプリンタを利用した専用コントローラー</strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。
-                  </p>
-                  <p>
-                    ● 最大の特徴は、デジタルとリアルを融合させる<strong>贅沢な2画面構成</strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。 実際にペンを使って生き物を描くというアナログな感触をあえて残すことで、UI/UXの配慮と没入感を両立させています。 
-                  </p>
-                </div>
-              </div>
-
-              {/* 画像エリア (右側 5カラム) - 指定の赤枠サイズを意識した縦並び */}
-              <div className="lg:col-span-5 flex flex-col gap-6 h-full justify-between">
-                <motion.div whileHover={{ scale: 1.03 }} className="bg-white p-4 rounded-3xl shadow-lg border-2 border-slate-100 flex flex-col items-center">
-                  <div className="relative w-full aspect-[10/4] rounded-2xl overflow-hidden bg-slate-100 mb-3 shadow-inner">
-                    <Image src="/images/event3.jpg" alt="Arcade Cabinet" fill className="object-cover" />
+              <div className="lg:col-span-7 space-y-8">
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-white/40 backdrop-blur-xl p-10 rounded-[60px] shadow-xl border-4 border-white relative overflow-hidden"
+                >
+                  <p className="mb-8 italic text-slate-900 text-2xl font-black border-l-8 border-blue-500 pl-6">画面の中だけで完結させない、新たな体験を。</p>
+                  <div className="text-lg font-bold text-slate-600 leading-9 space-y-6">
+                    <p>● 私たちは、通りすがりの人が「面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong>アーケード筐体そのものから設計</strong>を行いました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。</p>
+                    <p>● 入力デバイスも、市販品ではなく<strong>3Dプリンタを利用した専用コントローラー</strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。</p>
+                    <p>● 最大の特徴は、デジタルとリアルを融合させる<strong>贅沢な2画面構成</strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。アナログな感触をあえて残すことで、没入感を両立させています。</p>
                   </div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Arcade Cabinet</p>
-                </motion.div>
-
-                <motion.div whileHover={{ scale: 1.03 }} className="bg-white p-4 rounded-3xl shadow-lg border-2 border-slate-100 flex flex-col items-center">
-                  <div className="relative w-full aspect-[10/4] rounded-2xl overflow-hidden bg-slate-100 mb-3 shadow-inner">
-                    <Image src="/images/controller_photo.jpg" alt="3D Print Controller" fill className="object-cover" />
-                  </div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">3D Printed Controller</p>
-                </motion.div>
-
-                <motion.div whileHover={{ scale: 1.03 }} className="bg-white p-4 rounded-3xl shadow-lg border-2 border-slate-100 flex flex-col items-center">
-                  <div className="relative w-full aspect-[10/4] rounded-2xl overflow-hidden bg-slate-100 mb-3 shadow-inner">
-                    <Image src="/images/working_photo.jpg" alt="Work Scene" fill className="object-cover" />
-                  </div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Manufacturing Process</p>
                 </motion.div>
               </div>
 
+              <div className="lg:col-span-5 flex flex-col gap-8">
+                {[
+                  
+                  { src: "/images/controller_photo.jpg", label: "Custom Controller" },
+                  { src: "/images/working_photo.jpg", label: "Manufacturing" }
+                ].map((img, i) => (
+                  <motion.div 
+                    key={i} 
+                    whileHover={{ scale: 1.05 }}
+                    className="relative rounded-[40px] overflow-hidden shadow-2xl border-4 border-white"
+                  >
+                    <Image src={img.src} alt={img.label} width={600} height={400} className="object-cover" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                      <p className="text-white text-xs font-black tracking-widest uppercase">{img.label}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
 
-{/* 4. Software (構成図の余白調整 & Backend詳細化) */}
+          {/* 4. Software */}
           <div>
-            <SubHeader emoji="⚡">Software: 複雑なロジックの統合</SubHeader>
+            <SubHeader emoji="🖥️">Software: 複雑なロジックの統合</SubHeader>
             <div className="grid lg:grid-cols-12 gap-8 items-stretch">
-              
-              {/* システム構成図 (余白を詰め、画像を大きく表示) */}
-              <div className="lg:col-span-7 bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-[60px] shadow-2xl border-4 border-slate-100 relative overflow-hidden flex flex-col">
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400"></div>
-                <p className="text-[10px] font-black text-slate-300 mb-6 uppercase tracking-[0.3em] text-center">Full System Architecture & Technical Stack</p>
-                
-                <div className="flex-grow flex items-center justify-center relative group p-2">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-50 to-slate-50 rounded-[40px] blur-xl opacity-20 transition duration-1000"></div>
-                  <div className="relative w-full h-full min-h-[500px]">
-                    <Image 
-                      src="/images/system_diagram.png" 
-                      alt="Architecture" 
-                      fill
-                      className="object-contain rounded-[40px] drop-shadow-md bg-white/30" 
-                    />
-                  </div>
+              <div className="lg:col-span-7 bg-white/60 backdrop-blur-xl p-8 rounded-[60px] shadow-2xl border-4 border-white relative overflow-hidden flex flex-col">
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400" />
+                <p className="text-[10px] font-black text-slate-300 mt-4 mb-8 uppercase tracking-[0.3em] text-center">Full System Architecture</p>
+                <div className="flex-grow relative min-h-[500px] flex items-center justify-center">
+                  <Image src="/images/system_diagram.png" alt="Architecture" fill className="object-contain p-4" />
                 </div>
               </div>
 
-              {/* 解説カード (縦並び) */}
               <div className="lg:col-span-5 flex flex-col gap-6">
-                <DetailCard title="Frontend" color="border-green-500 text-green-600">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">Unity / C#</span>
-                  <p className="text-[15px] leading-relaxed font-bold">
-                    お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。
-                  </p>
+                <DetailCard title="Frontend" color="border-green-500" isCompact>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">Unity / C#</span>
+                  <p className="text-base leading-relaxed">お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。</p>
                 </DetailCard>
-
-                <DetailCard title="Backend" color="border-blue-500 text-blue-600">
-                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit tracking-tighter">GAS / Drive / Sheets / LINE / Slack API</span>
-                   <div className="text-[13px] leading-relaxed font-bold space-y-4">
+                <DetailCard title="Backend" color="border-blue-500" isCompact>
+                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">GAS / DRIVE / SHEETS / LINE API/ SLACK API</span>
+                   <div className="text-sm space-y-3 pb-10">
                     <p>
-                      <strong>● AI連携の自動化:</strong> Unity・Drive・AI・Sheets間のデータ往復をGASで完全制御。AIが生成した属性情報をUnityへ反映しつつ、動的に図鑑画像を自動生成するロジックを構築しました。
+                    <strong>● AI連携の自動化:</strong> Unity・Drive・AI・Sheets間のデータ往復をGASで完全制御。AIが生成した属性情報をUnityへ反映しつつ、動的に図鑑画像を自動生成するロジックを構築しました。
                     </p>
-                    <p>
-                      <strong>● 体験のデジタル化:</strong> 蓄積された図鑑データをLINE API経由でユーザーへ送信。体験の思い出と学びを資産として持ち帰れるUXを提供しています。
-                    </p>
-                    <p>
-                      <strong>● 運用監視システム:</strong> Slack APIと連携し、Sheetsのログや図鑑画像をリアルタイムで監視。公共展示におけるシステムの透明性と安定運用を支えています。
-                    </p>
+                    <p><strong>● 運用監視体制:</strong> LINEへの図鑑送信に加え、Slack APIでプレイ状況をリアルタイム監視。公共展示におけるシステムの安定稼働を技術面で支えています。</p>
                    </div>
                 </DetailCard>
-
-                <DetailCard title="AI Integration" color="border-purple-500 text-purple-600">
-                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">OpenAI API/ GPT-4o</span>
-                  <p className="text-[15px] leading-relaxed font-bold">
-                    gpt-4-vision-previewを活用し、キャプチャ画像から名前や属性を決定。「なぜその判断に至ったのか」を論理的に言語化するプロンプト設計を行い、AIの思考過程を「学び」へ変えています。
-                  </p>
+                <DetailCard title="AI Integration" color="border-purple-500" isCompact>
+                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">OpenAI / GPT-4o</span>
+                  <p className="text-base leading-relaxed">gpt-4-vision-previewを活用し、キャプチャ画像から名前や属性を決定。「なぜその判断に至ったのか」を論理的に言語化するプロンプト設計を行い、AIの思考過程を「学び」へ変えています。</p>
                 </DetailCard>
               </div>
-
             </div>
           </div>
 
           {/* 5. 2つの壁 */}
           <div>
             <SubHeader emoji="🏔️">立ちはだかった2つの壁</SubHeader>
-            <div className="space-y-32 relative">
-              <div className="absolute left-[50%] top-0 bottom-0 w-1 bg-slate-200/50 hidden lg:block -z-10"></div>
+            <div className="space-y-48 relative">
+              <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-slate-200/50 hidden lg:block -translate-x-1/2" />
               
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
-                <div className="flex-1 text-right order-2 lg:order-1 space-y-6 text-justify lg:text-right">
+                <div className="flex-1 text-right space-y-6">
                   <span className="bg-red-500 text-white px-6 py-2 rounded-full text-xs font-black italic shadow-lg inline-block">CASE 01: 離脱率という真実</span>
-                  <h3 className="text-2xl md:text-4xl font-black text-slate-800">「物珍しさ」のその先へ</h3>
-                  <p className="font-bold leading-9 text-slate-600">
-                    実装当初、筐体の珍しさに多くの人が立ち止まりましたが、完走してくれる人はごくわずかでした。原因究明のため、現場でのプレイヤー観察やログ分析を徹底的に行いました。判明したのは「体験時間が長すぎる」「初見では説明が分かりにくい」という課題でした。私たちは「5分」を最大限楽しんでもらうため、UIをシンプルにし、AIのレスポンスを1秒でも速める改善を繰り返しました。その執念が、満足度90%超という評価を導きました。
-                  </p>
+                  <h3 className="text-2xl md:text-5xl font-black text-slate-800 tracking-tighter">「物珍しさ」のその先へ</h3>
+                  <p className="text-lg leading-9 text-slate-600">　実装当初、筐体の珍しさから多くの人が立ち止まりましたが、最後まで遊んでくれる人はごくわずかでした。私たちはその原因を感覚で判断するのではなく、実際にプレイしたユーザへのヒアリングやアンケート、プレイログの分析を通じて丁寧に捉え直しました。その結果、「体験時間が長すぎること」や「初見では操作やルールが分かりにくいこと」が、離脱の主な要因であると分かりました。そこで、アニメーションによる導線設計やUIの簡略化、AIレスポンスの高速化など、体験の負荷を一つひとつ取り除く改善を繰り返しました。その結果、体験時間を約5分に収めながら離脱を抑えることができ、最終的にはユーザ満足度90%を超える評価につながりました。</p>
                 </div>
-                <div className="w-20 h-20 bg-red-500 rounded-full border-[10px] border-white shadow-2xl flex items-center justify-center text-white font-black text-2xl z-10 order-1 lg:order-2 shrink-0">01</div>
-                <div className="flex-1 order-3">
-                  <div className="bg-white/80 backdrop-blur-sm p-8 rounded-[60px] shadow-2xl border-2 border-red-50 transform lg:rotate-3 transition-all">
+                <div className="w-16 h-16 bg-red-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10">01</div>
+                <div className="flex-1">
+                  <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
                     <Image src="/images/ux_improvement_flow.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
                 <div className="flex-1 order-3 lg:order-1">
-                  <div className="bg-white/80 backdrop-blur-sm p-8 rounded-[60px] shadow-2xl border-2 border-blue-50 transform lg:-rotate-3 transition-all">
-                    <Image src="/images/event1.jpg" alt="Fieldwork" width={500} height={500} className="rounded-3xl" />
-                  </div>
+                  <motion.div whileHover={{ scale: 1.05, rotate: -2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-blue-50">
+                    <Image src="/images/event1.jpg" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
+                  </motion.div>
                 </div>
-                <div className="w-20 h-20 bg-blue-500 rounded-full border-[10px] border-white shadow-2xl flex items-center justify-center text-white font-black text-2xl z-10 order-1 lg:order-2 shrink-0">02</div>
-                <div className="flex-1 order-2 lg:order-3 space-y-6 text-left text-justify">
+                <div className="w-16 h-16 bg-blue-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10 order-1 lg:order-2">02</div>
+                <div className="flex-1 order-2 lg:order-3 space-y-6 text-left">
                   <span className="bg-blue-500 text-white px-6 py-2 rounded-full text-xs font-black italic shadow-lg inline-block">CASE 02: チームの熱量</span>
-                  <h3 className="text-2xl md:text-4xl font-black text-slate-800">「現場の笑顔」が火を付けた</h3>
-                  <p className="font-bold leading-9 text-slate-600">
-                    設置後の安定期、メンバーのモチベーションが低下しました。改善を磨き続ける大切さを共有するため、あえてオープンキャンパスへの展示を強行。「自分が作ったものの前で子供たちが本気で笑い、驚く姿を直接肌で感じる」という、私たちのプロダクトにしかできない体験を共有しました。画面上の数字ではなく、目の前の喜びを分かち合った瞬間、チームに「最高のものに仕上げたい」という執念が再燃。これが今の完成度と、企業賞受賞という結末に繋がりました。
-                  </p>
+                  <h3 className="text-2xl md:text-5xl font-black text-slate-800 tracking-tighter">「ユーザの笑顔」が火を付けた</h3>
+                  <p className="text-lg leading-9 text-slate-600">　設置後の安定期、プロジェクトは一定の完成度に達した一方で、チーム内にはどこか停滞感が生まれていました。そこで私は、改善を磨き続ける大切さを共有するため、あえてオープンキャンパスへの展示を提案。会場では、自分たちが作った筐体の前で、多くの人が笑い、驚き、楽しむ姿を直接目にすることができました。画面上の数値や評価ではなく、目の前のユーザの「楽しさ」や「喜び」を実感できたことが、チームの意識を大きく変えました。この体験をきっかけに、「もっと良くしたい」「最高の形で届けたい」という思いが再びチームに火を灯し、現在の完成度、そして企業賞の受賞へとつながっています。</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 6. 学んだこと */}
-          <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="bg-yellow-400 p-12 md:p-24 rounded-[100px] shadow-[0_40px_100px_rgba(255,204,0,0.3)] text-slate-900 relative overflow-hidden">
-               <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-white/20 rounded-full blur-[120px]"></div>
-               <h2 className="text-4xl md:text-7xl font-black mb-16 italic tracking-tighter text-center lg:text-left">
-                 Final Thoughts: <br />エンジニアとしての覚悟
-               </h2>
-               <div className="space-y-10 text-xl md:text-3xl font-black leading-tight tracking-tight text-justify lg:text-left">
-                 <p className="relative pl-10 border-l-8 border-slate-900">ものづくりとは、誰かの『大切な時間』を預かるということ。</p>
-                 <p className="relative pl-10 border-l-8 border-slate-900">技術はいかに「驚き」と「納得」という体験に変えられるか。</p>
-                 <p className="relative pl-10 border-l-8 border-slate-900">現場の笑顔で情熱を維持する。これが私たちの最高の正解でした。</p>
-               </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="bg-yellow-400 p-12 md:p-24 rounded-[100px] shadow-2xl text-slate-900 relative overflow-hidden"
+          >
+            <h2 className="text-4xl md:text-7xl font-black mb-12 italic tracking-tighter">Final Thoughts</h2>
+            <div className="space-y-10 text-xl md:text-3xl font-black leading-tight">
+              <p className="relative pl-10 border-l-8 border-slate-900">ものづくりとは、作って終わりではなく、常に最善を尽くすこと。</p>
+              <p className="relative pl-10 border-l-8 border-slate-900">技術はいかに人に新しい驚きや発見を、体験として届けられるかどうか。</p>
+              <p className="relative pl-10 border-l-8 border-slate-900">現場での反応や笑顔こそが情熱を維持し、大きなやりがいとなる。</p>
             </div>
           </motion.div>
       </section>
 
-      {/* --- フッター --- */}
-      <footer className="py-40 text-center bg-white relative z-10">
-        <Link href="/" className="inline-block px-16 py-7 bg-slate-900 text-white font-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.2)] text-2xl tracking-[0.2em]">
+      <footer className="py-40 text-center bg-white/80 backdrop-blur-md relative z-10">
+        <Link href="/" className="inline-block px-16 py-8 bg-slate-900 text-white font-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl text-2xl tracking-[0.2em]">
           BACK TO TOP
         </Link>
-        <p className="mt-16 text-sm font-black text-slate-300 uppercase tracking-[0.6em]">pAInt Project: Developed for Nintendo selection</p>
+        <p className="mt-16 text-sm font-black text-slate-300 uppercase tracking-[0.6em]">pAInt Project: Making of AI Arcade</p>
       </footer>
-
     </main>
   );
 }
