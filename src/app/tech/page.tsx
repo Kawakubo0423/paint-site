@@ -47,10 +47,10 @@ export default function TechDetail() {
       <header className="pt-48 pb-32 px-4 text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <h1 className="text-5xl md:text-8xl font-black mb-10 leading-[1.05] tracking-tight text-slate-900">
-            AIとアーケードで、<br /><span className="text-blue-500">「新たな体験」</span>のカタチに。
+            AIとアーケードゲームで、<br /><span className="text-blue-500">「新たな体験」</span>をカタチに。
           </h1>
           <p className="text-xl md:text-2xl text-slate-500 font-black max-w-3xl mx-auto leading-relaxed">
-            なぜ私たちは、このプロジェクトを始めたのか。
+            〜「pAInt」開発の裏側と、成功に至るまでの道のり〜
           </p>
         </motion.div>
       </header>
@@ -69,24 +69,48 @@ export default function TechDetail() {
                   生成AIの急速な普及により、高度な技術であったAIは私たちの身近な存在となりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考過程はブラックボックスのままです。しかし、これからの時代はAIの利便性や懸念点を理解した上で活用することが重要になってきます。
                 </p>
                 <p>
-                  そこで私たちは、<span className="text-blue-400">「誰もが楽しめるゲーム」</span>を通して、この課題に挑戦しました。<br />AIの思考過程や考え方を誰もが直感的に体験できる形で可視化し、AIとの新たな向き合い方を提案したいと考え、このプロジェクトをスタートさせました。
+                  そこで私たちは、AIの思考過程や考え方を誰もが直感的に体験できる形で可視化し、AIとの新たな向き合い方を提案したいと考えました。<br />それこそ、「多くの人が楽しめるゲーム」の中に、<span className="text-blue-400">AIへの学び</span>を取り入れた「pAInt」プロジェクトの始まりです。
                 </p>
               </div>
             </div>
           </motion.div>
 
-          {/* 2. 3つの徹底的なこだわり */}
-          <div>
+        {/* 2. 3つの徹底的なこだわり */}
+          <div className="relative z-10">
             <SubHeader emoji="🎯">プロダクトを支える3つの柱</SubHeader>
             <div className="grid md:grid-cols-3 gap-10">
-              <DetailCard title="筐体という「存在感」" color="border-blue-500 text-blue-500">
-                <p>ネットの海に埋もれるデジタル作品ではなく、<strong><span className="text-blue-500 font-bold">大学の廊下</span></strong>という現実空間で勝負。「面白そうなのがあるからやってみる」「偶然通った人が思わず触れてしまう」、私たちにしかできないような唯一無二で新たな体験を追求しました。</p>
+              <DetailCard title="筐体という存在感" color="border-blue-500 text-blue-500">
+                <p>
+                  ネットの海に埋もれるデジタル作品ではなく、
+                  <strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">大学の廊下</span></strong>
+                  という現実空間で勝負。
+                </p>
+                <p>
+                  「面白そうなのがあるからやってみる」「偶然通った人が思わず触れてしまう」、
+                  私たちにしかできないような唯一無二で新たな体験を追求しました。
+                </p>
               </DetailCard>
-              <DetailCard title="徹底した「ユーザ体験」" color="border-red-500 text-red-500">
-                <p>当初の課題は「体験時間の長さ」や「分かりにくいUI」による離脱者の多さでした。私たちはユーザへの<strong><span className="text-red-500 font-bold">ヒアリングやアンケート、ログ分析</span></strong>を通じてUI/UXや体験時間を徹底的に見直し、常にユーザ目線での改善を繰り返しました。</p>
+
+              <DetailCard title="徹底したユーザ目線" color="border-red-500 text-red-500">
+                <p>
+                  当初の課題は「体験時間の長さ」や「分かりにくいUI」による離脱者の多さでした。
+                </p>
+                <p>
+                  私たちはユーザへの
+                  <strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">ヒアリングやアンケート、ログ分析</span></strong>
+                  を通じてUI/UXや体験時間を徹底的に見直し、常にユーザ目線での改善を繰り返しました。
+                </p>
               </DetailCard>
-              <DetailCard title="AIから「フィードバック」" color="border-yellow-500 text-yellow-500">
-                <p>単なる「勝ち負け」で終わらせないのが最大の特徴。バトル後のハカセによる言語化された判断理由を見て、ユーザはAIについて学ぶことができます。<br /><strong><span className="text-yellow-500 font-bold">公式LINEで「図鑑」として持ち帰り可能</span></strong>で、学びを思い出として手元に残せます。</p>
+
+              <DetailCard title="AIフィードバック" color="border-yellow-500 text-yellow-600">
+                <p>
+                  単なる「勝ち負け」で終わらせないのが最大の特徴。
+                  バトル後のAIによる言語化された判断理由を見て、ユーザはAIについての学びを深めることができます。
+                </p>
+                <p>
+                  <strong><span className="text-yellow-600 underline decoration-yellow-200 decoration-4 underline-offset-4">公式LINEで「図鑑」として持ち帰り可能</span></strong>
+                  で、遊びの学びを思い出として手元に残せます。
+                </p>
               </DetailCard>
             </div>
           </div>
@@ -104,13 +128,13 @@ export default function TechDetail() {
                 </p>
                 <div className="text-lg font-bold text-slate-600 leading-9 space-y-6">
                   <p>
-                    私たちは「通りすがりの人が、面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong>アーケード筐体そのものから設計</strong>を行いました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。
+                    ● 私たちは「通りすがりの人が、面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong>アーケード筐体そのものから設計</strong>を行いました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。
                   </p>
                   <p>
-                    入力デバイスも、市販品ではなく<strong>3Dプリンタを利用した専用コントローラー</strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。
+                    ● 入力デバイスも、市販品ではなく<strong>3Dプリンタを利用した専用コントローラー</strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。
                   </p>
                   <p>
-                    最大の特徴は、デジタルとリアルを融合させる<strong>贅沢な2画面構成</strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。 実際にペンを使って生き物を描くというアナログな感触をあえて残すことで、UI/UXの配慮と没入感を両立させています。 
+                    ● 最大の特徴は、デジタルとリアルを融合させる<strong>贅沢な2画面構成</strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。 実際にペンを使って生き物を描くというアナログな感触をあえて残すことで、UI/UXの配慮と没入感を両立させています。 
                   </p>
                 </div>
               </div>
@@ -142,54 +166,57 @@ export default function TechDetail() {
             </div>
           </div>
 
-          {/* 4. Software (新提案：構成図を左に、解説カードを右に縦並び) */}
+{/* 4. Software (構成図の余白調整 & Backend詳細化) */}
           <div>
             <SubHeader emoji="⚡">Software: 複雑なロジックの統合</SubHeader>
             <div className="grid lg:grid-cols-12 gap-8 items-stretch">
               
-              {/* システム構成図 (左側 7カラム) */}
-              <div className="lg:col-span-7 bg-white/70 backdrop-blur-md p-10 rounded-[60px] shadow-2xl border-4 border-slate-100 relative overflow-hidden flex flex-col">
+              {/* システム構成図 (余白を詰め、画像を大きく表示) */}
+              <div className="lg:col-span-7 bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-[60px] shadow-2xl border-4 border-slate-100 relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400"></div>
-                <p className="text-[10px] font-black text-slate-300 mb-8 uppercase tracking-[0.3em] text-center">Full System Architecture & Technical Stack</p>
+                <p className="text-[10px] font-black text-slate-300 mb-6 uppercase tracking-[0.3em] text-center">Full System Architecture & Technical Stack</p>
                 
-                <div className="flex-grow flex items-center justify-center relative group">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-blue-50 to-slate-50 rounded-[40px] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                  <Image src="/images/system_diagram.png" alt="Architecture" width={450} height={150} className="relative rounded-[40px] shadow-md bg-white/50 p-6" />
+                <div className="flex-grow flex items-center justify-center relative group p-2">
+                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-50 to-slate-50 rounded-[40px] blur-xl opacity-20 transition duration-1000"></div>
+                  <div className="relative w-full h-full min-h-[500px]">
+                    <Image 
+                      src="/images/system_diagram.png" 
+                      alt="Architecture" 
+                      fill
+                      className="object-contain rounded-[40px] drop-shadow-md bg-white/30" 
+                    />
+                  </div>
                 </div>
-                
-                {/* <div className="mt-10 flex flex-wrap justify-center gap-4">
-                   {["unity", "openai", "gas", "line", "slack"].map((tech) => (
-                    <div key={tech} className="bg-white px-5 py-2 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3 grayscale hover:grayscale-0 transition-all duration-300 transform hover:-translate-y-1">
-                      <Image src={`/images/tech_${tech}.png`} alt={tech} width={24} height={24} />
-                      <span className="text-[9px] font-black uppercase text-slate-400">{tech}</span>
-                    </div>
-                   ))}
-                </div> */}
               </div>
 
-              {/* 解説カード (右側 5カラム 縦並び) */}
+              {/* 解説カード (縦並び) */}
               <div className="lg:col-span-5 flex flex-col gap-6">
                 <DetailCard title="Frontend" color="border-green-500 text-green-600">
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">Unity / C#</span>
-                  {/* <p className="font-bold text-slate-800 text-sm mb-2">ステートマシンによるゲーム制御</p> */}
                   <p className="text-[15px] leading-relaxed font-bold">
                     お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。
                   </p>
                 </DetailCard>
 
                 <DetailCard title="Backend" color="border-blue-500 text-blue-600">
-                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">GAS / Google Drive / Google Sheets / LINE API / Slack API</span>
-                   {/* <p className="font-bold text-slate-800 text-sm mb-2">運用を支えるリアルタイム基盤</p> */}
-                   <p className="text-[15px] leading-relaxed font-bold">
-                    GASを核にLINE Messaging APIを連携。図鑑のスマホ送信機能を構築。さらにSlack APIと連携し、プレイ状況を監視することで公共の場での安定稼働を技術面で支えています。
-                   </p>
+                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit tracking-tighter">GAS / Drive / Sheets / LINE / Slack API</span>
+                   <div className="text-[13px] leading-relaxed font-bold space-y-4">
+                    <p>
+                      <strong>● AI連携の自動化:</strong> Unity・Drive・AI・Sheets間のデータ往復をGASで完全制御。AIが生成した属性情報をUnityへ反映しつつ、動的に図鑑画像を自動生成するロジックを構築しました。
+                    </p>
+                    <p>
+                      <strong>● 体験のデジタル化:</strong> 蓄積された図鑑データをLINE API経由でユーザーへ送信。体験の思い出と学びを資産として持ち帰れるUXを提供しています。
+                    </p>
+                    <p>
+                      <strong>● 運用監視システム:</strong> Slack APIと連携し、Sheetsのログや図鑑画像をリアルタイムで監視。公共展示におけるシステムの透明性と安定運用を支えています。
+                    </p>
+                   </div>
                 </DetailCard>
 
                 <DetailCard title="AI Integration" color="border-purple-500 text-purple-600">
                   <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 inline-block w-fit">OpenAI API/ GPT-4o</span>
-                  {/* <p className="font-bold text-slate-800 text-sm mb-2">納得感を生む思考ロジック</p> */}
                   <p className="text-[15px] leading-relaxed font-bold">
-                    gpt-4-vision-previewを活用した画像解析。判断理由を論理的に説明するためのプロンプト最適化に注力。納得感のあるフィードバックを生成するアルゴリズムを開発しました。
+                    gpt-4-vision-previewを活用し、キャプチャ画像から名前や属性を決定。「なぜその判断に至ったのか」を論理的に言語化するプロンプト設計を行い、AIの思考過程を「学び」へ変えています。
                   </p>
                 </DetailCard>
               </div>
