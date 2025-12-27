@@ -247,7 +247,7 @@ export default function TechDetail() {
                 <div className="w-16 h-16 bg-red-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10">01</div>
                 <div className="flex-1">
                   <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
-                    <Image src="/images/ux_improvement_flow.jpg" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
+                    <Image src="/images/ux_improvement_flow.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
               </div>
