@@ -177,11 +177,11 @@ export default function TechDetail() {
                 </motion.div>
               </div>
 
-              <div className="lg:col-span-5 flex flex-col gap-8">
+              <div className="lg:col-span-5 flex flex-col gap-5">
                 {[
                   
-                  { src: "/images/controller_photo.jpg", label: "Custom Controller" },
-                  { src: "/images/working_photo.jpg", label: "Manufacturing" }
+                  { src: "/images/controller1.jpg", label: "Custom Controller" },
+                  { src: "/images/working_photo1.jpg", label: "Manufacturing" }
                 ].map((img, i) => (
                   <motion.div 
                     key={i} 
@@ -239,7 +239,7 @@ export default function TechDetail() {
               <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-slate-200/50 hidden lg:block -translate-x-1/2" />
               
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
-                <div className="flex-1 text-right space-y-6">
+                <div className="flex-1 text-left space-y-6">
                   <span className="bg-red-500 text-white px-6 py-2 rounded-full text-xs font-black italic shadow-lg inline-block">CASE 01: 離脱率という真実</span>
                   <h3 className="text-2xl md:text-5xl font-black text-slate-800 tracking-tighter">「物珍しさ」のその先へ</h3>
                   <p className="text-lg leading-9 text-slate-600">　実装当初、筐体の珍しさから多くの人が立ち止まりましたが、最後まで遊んでくれる人はごくわずかでした。私たちはその原因を感覚で判断するのではなく、実際にプレイしたユーザへのヒアリングやアンケート、プレイログの分析を通じて丁寧に捉え直しました。その結果、「体験時間が長すぎること」や「初見では操作やルールが分かりにくいこと」が、離脱の主な要因であると分かりました。そこで、アニメーションによる導線設計やUIの簡略化、AIレスポンスの高速化など、体験の負荷を一つひとつ取り除く改善を繰り返しました。その結果、体験時間を約5分に収めながら離脱を抑えることができ、最終的にはユーザ満足度90%を超える評価につながりました。</p>
@@ -247,7 +247,7 @@ export default function TechDetail() {
                 <div className="w-16 h-16 bg-red-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10">01</div>
                 <div className="flex-1">
                   <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
-                    <Image src="/images/ux_improvement_flow.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
+                    <Image src="/images/ux_improvement_flow.jpg" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
               </div>
@@ -255,7 +255,7 @@ export default function TechDetail() {
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
                 <div className="flex-1 order-3 lg:order-1">
                   <motion.div whileHover={{ scale: 1.05, rotate: -2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-blue-50">
-                    <Image src="/images/event1.jpg" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
+                    <Image src="/images/event2.png" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
                 <div className="w-16 h-16 bg-blue-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10 order-1 lg:order-2">02</div>
