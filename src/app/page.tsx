@@ -1,12 +1,43 @@
 "use client";
 
-import { useState } from "react"; // 追加
+import { useState, useRef, useEffect } from "react"; // useRef, useEffect を追加
 import Image from "next/image";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"; // AnimatePresence追加
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
+
+// --- 【追加】ゲームモードの詳細データ ---
+const gameModeDetails = [
+  {
+    id: "duo",
+    title: "二人対戦 (Duo Battle)",
+    subtitle: "究極の心理戦",
+    emoji: "⚔️",
+    color: "text-red-500",
+    bg: "bg-red-50",
+    description: "pAIntの基本モード。友達や家族と、お互いが描いたイキモノで真剣勝負！相手のタイプを予想し、読み勝った時の快感は格別です。対戦相手がいるからこそ生まれる熱狂を楽しもう。"
+  },
+  {
+    id: "solo",
+    title: "一人対戦 (Solo Battle)",
+    subtitle: "過去の強敵に挑む",
+    emoji: "🤖",
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    description: "一人でもCPUと対戦が可能！CPUが使うのは「過去に他のユーザが描いたイキモノ」です。ランダムに選ばれる強敵たちと戦うことで、自分にはなかった新しい描き方やAIの判断基準を学ぶことができます。"
+  },
+  {
+    id: "quick",
+    title: "お絵描きのみ (Quick)",
+    subtitle: "短い時間でも大満足",
+    emoji: "🎨",
+    color: "text-yellow-600",
+    bg: "bg-yellow-50",
+    description: "「バトルをする時間がない...」という人のためのスピード体験モード。描いた後にAIが即座に分析し、図鑑を生成します。AIの分析待ち時間は、過去のユーザが描いた図鑑一覧を眺めて楽しむことができる、無駄のない設計です。"
+  }
+];
 
 // --- モーダル用の詳細データ ---
 const howToPlayDetails = [
@@ -51,7 +82,7 @@ const COLORS = ["#ffcc00", "#e2e8f0"];
 
 // --- 実績写真データ ---
 const achievementPhotos = [
-  { src: "/images/event1.jpg", alt: "イベントで遊ぶ参加者", caption: "オープンキャンパスでの様子" },
+  { src: "/images/event2.png", alt: "イベントで遊ぶ参加者", caption: "オープンキャンパスでの様子" },
   { src: "/images/event2.jpg", alt: "コンテスト受賞", caption: "技育博2025(vol.2) 企業賞受賞" },
   { src: "/images/event3.jpg", alt: "廊下での展示", caption: "一から筐体を手作り" },
 ];
@@ -59,12 +90,61 @@ const achievementPhotos = [
 
 export default function Home() {
   const [selectedStep, setSelectedStep] = useState<number | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 100], [0, 0.9]);
   const headerY = useTransform(scrollY, [0, 100], [-20, 0]);
 
   // 実績カウンターが表示されたらアニメーション開始するためのフック
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
+
+  // --- 追加：図鑑セクションの制御用 ---
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 自動スクロールの処理
+  useEffect(() => {
+    const container = galleryRef.current;
+    if (!container) return;
+
+    let animationFrameId: number;
+
+    const scroll = () => {
+      // ユーザー操作中は自動スクロールを停止
+      if (isUserInteracting) {
+        animationFrameId = requestAnimationFrame(scroll);
+        return;
+      }
+
+      // 1フレームごとに少しずつ右へスクロール（速度はここで調整）
+      container.scrollLeft += 1.5; 
+
+      // 簡易的な無限ループ処理：右端付近まで来たら先頭に戻す
+      if (container.scrollLeft >= container.scrollWidth / 2) {
+         container.scrollTo({ left: 0, behavior: 'auto' }); // 瞬時に戻す
+      }
+
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isUserInteracting]);
+
+  // ユーザー操作開始
+  const handleInteractionStart = () => {
+    setIsUserInteracting(true);
+    if (autoScrollTimerRef.current) clearTimeout(autoScrollTimerRef.current);
+  };
+
+  // ユーザー操作終了（少し待ってから自動再開）
+  const handleInteractionEnd = () => {
+    autoScrollTimerRef.current = setTimeout(() => {
+        setIsUserInteracting(false);
+    }, 1500);
+  };
+  // ------------------------------------
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-slate-50 selection:bg-yellow-200 selection:text-slate-900">
@@ -81,9 +161,11 @@ export default function Home() {
           {/* メニューの順番も変更 */}
           <a href="#about" className="hover:text-blue-500 transition-colors">pAIntとは？</a>
           <a href="#howtoplay" className="hover:text-blue-500 transition-colors">あそびかた</a>
+          <a href="#modes" className="hover:text-blue-500 transition-colors">ゲームモード</a>
           <a href="#mechanics" className="hover:text-blue-500 transition-colors">バトルの秘密</a>
           <a href="#gallery" className="hover:text-blue-500 transition-colors">みんなの図鑑</a>
           <a href="#achievement" className="hover:text-blue-500 transition-colors">実績</a>
+          <a href="#tech" className="hover:text-blue-500 transition-colors">開発レポート</a>
         </nav>
       </motion.header>
 
@@ -155,7 +237,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h3 className="text-2xl md:text-3xl font-bold text-slate-800 leading-relaxed">
-                AIが「命」を吹き込む。<br />
+                AIが「命」を吹き込む、<br />
                 新感覚アーケードゲーム。
               </h3>
               <p className="text-lg text-slate-600 leading-8">
@@ -229,6 +311,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- 【新セクション】選べる3つのゲームモード --- */}
+      <section id="modes" className="py-24 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-800">選べる3つのゲームモード</h2>
+            <p className="text-slate-500 mt-4 font-bold">スタイルに合わせて、最適な遊び方を選ぼう</p>
+          </motion.div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {gameModeDetails.map((mode) => (
+              <motion.div 
+                key={mode.id}
+                whileHover={{ scale: 1.02 }}
+                className={`${mode.bg} p-10 rounded-[40px] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center group cursor-pointer transition-all hover:shadow-xl`}
+                onClick={() => setSelectedMode(mode.id)}
+              >
+                <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">{mode.emoji}</div>
+                <h3 className={`text-2xl font-black mb-2 ${mode.color}`}>{mode.title}</h3>
+                <p className="text-slate-400 font-bold mb-6">{mode.subtitle}</p>
+                <button className={`mt-auto px-6 py-2 rounded-full border-2 ${mode.color.replace('text-', 'border-')} ${mode.color} font-black text-sm group-hover:bg-white transition-colors`}>
+                  詳細を見る
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* --- 追加：詳細モーダル --- */}
       <AnimatePresence>
         {selectedStep && (
@@ -291,79 +401,251 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* --- 【順序変更】4. バトルのヒミツ --- */}
-      <section id="mechanics" className="py-24 px-4 bg-yellow-50 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+      {/* --- 【追加】ゲームモード詳細モーダル --- */}
+      <AnimatePresence>
+        {selectedMode && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedMode(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden">
+              <button onClick={() => setSelectedMode(null)} className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors z-10">✕</button>
+              <div className="p-10 md:p-16 text-center">
+                <div className="text-7xl mb-8">{gameModeDetails.find(m => m.id === selectedMode)?.emoji}</div>
+                <h3 className={`text-3xl md:text-4xl font-black mb-4 ${gameModeDetails.find(m => m.id === selectedMode)?.color}`}>
+                  {gameModeDetails.find(m => m.id === selectedMode)?.title}
+                </h3>
+                <p className="text-slate-400 font-bold mb-8 tracking-widest">{gameModeDetails.find(m => m.id === selectedMode)?.subtitle}</p>
+                <div className="bg-slate-50 p-8 rounded-3xl text-left border-2 border-slate-100">
+                  <p className="text-slate-600 leading-relaxed font-bold text-lg whitespace-pre-wrap">
+                    {gameModeDetails.find(m => m.id === selectedMode)?.description}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+
+{/* --- 4. バトルのヒミツ (最終調整：重なり解消・右端揃え・横幅最適化) --- */}
+      <section id="mechanics" className="pt-16 pb-32 px-4 bg-yellow-50 relative overflow-hidden">
+        
+        {/* 背景の装飾 */}
+        <div className="absolute top-10 right-10 w-64 h-64 bg-yellow-200/30 rounded-full blur-3xl -z-0" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-red-100/30 rounded-full blur-3xl -z-0" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          
+          {/* A. AIの思考プロセス（吹き出し：重なりを解消し右端を揃える） */}
+          {/* 修正: md:gap-12 を追加して重なりを解消。items-centerで高さを揃える */}
+          <div className="flex flex-col md:flex-row items-center md:gap-12 mb-24">
+            
+            {/* 博士のアイコン */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="w-full md:w-auto flex justify-center flex-shrink-0 relative z-30"
+            >
+              <div className="relative w-48 h-48 md:w-72 md:h-72 bg-white rounded-full border-[10px] border-white overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.12)]">
+                <Image src="/images/hakase.jpg" alt="Hakase" fill className="object-cover" />
+              </div>
+            </motion.div>
+            
+            {/* 博士のセリフカード（吹き出し） */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              // 修正: flex-1で右端まで広げつつ、重なり用マージンを削除。横幅を少し抑えるために md:max-w-4xl を追加（右端揃えは維持）
+              className="flex-1 w-full bg-white p-8 md:p-12 rounded-[50px] shadow-[0_20px_50px_rgba(0,0,0,0.06)] relative border-2 border-slate-200 z-20 mt-8 md:mt-0 md:max-w-4xl"
+            >
+              {/* 吹き出しの矢印パーツ */}
+              {/* 修正: 左端の位置 md:left-[-12px] を微調整して、重なりを解いた隙間に適応させる */}
+              <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 md:top-1/2 md:left-[-3px] md:-translate-y-1/2 w-8 h-8 bg-white transform rotate-45 z-0 border-l-2 border-t-2 md:border-t-0 md:border-l-2 md:border-b-2 border-slate-200"></div>
+              
+              <div className="relative z-10">
+                <div className="inline-block bg-slate-900 text-white px-5 py-1.5 rounded-full text-[10px] font-black mb-6 tracking-[0.2em] uppercase">AI Logic Insight</div>
+                <h3 className="text-2xl md:text-4xl font-black text-slate-800 mb-6 flex items-center gap-3 italic leading-tight">
+                   AIの思考を読み解くのじゃ！
+                </h3>
+                <p className="text-base md:text-lg font-bold text-slate-600 leading-relaxed mb-10">
+                  ワシは「ペイント博士」じゃ。AIはキミの描いたイキモノの見た目や色などを見て、<br/>名前や技名、タイプを決定しておる。それぞれの傾向を教えてやろう。
+                </p>
+                
+                {/* 3属性の傾向 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-red-50 p-5 rounded-[30px] border-2 border-red-100/50 transition-transform hover:scale-[1.03]">
+                    <p className="text-red-500 font-black text-[18px] mb-1 flex items-center gap-2">
+                      <span className="text-xl">🌋</span> 陸タイプの傾向
+                    </p>
+                    <p className="text-slate-700 text-xs md:text-sm font-bold leading-relaxed">「地面に立っている」や「体を使って攻撃しそう」など</p>
+                  </div>
+                  <div className="bg-blue-50 p-5 rounded-[30px] border-2 border-blue-100/50 transition-transform hover:scale-[1.03]">
+                    <p className="text-blue-600 font-black text-[18px] mb-1 flex items-center gap-2">
+                      <span className="text-xl">🌊</span> 海タイプの傾向
+                    </p>
+                    <p className="text-slate-700 text-xs md:text-sm font-bold leading-relaxed">ヒレや尾、水の中で動いていそうな形や動きなど</p>
+                  </div>
+                  <div className="bg-yellow-50 p-5 rounded-[30px] border-2 border-yellow-100/50 transition-transform hover:scale-[1.03]">
+                    <p className="text-yellow-600 font-black text-[18px] mb-1 flex items-center gap-2">
+                      <span className="text-xl">☁️</span> 空タイプの傾向
+                    </p>
+                    <p className="text-slate-700 text-xs md:text-sm font-bold leading-relaxed">「飛ぶ・浮く・舞う」や空中を移動できそうな特徴など</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* B. バトルの鉄則：3つのルール（メイン） */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="w-full md:w-1/3 flex justify-center"
+            className="bg-white rounded-[60px] shadow-2xl p-8 md:p-20 relative overflow-hidden"
           >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 bg-white rounded-full border-4 border-yellow-400 overflow-hidden shadow-2xl">
-              <Image src="/images/hakase.jpg" alt="Hakase" fill className="object-cover" />
+            {/* 装飾ライン */}
+            <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500" />
+            
+            <div className="text-center mb-16">
+              <h3 className="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tighter italic uppercase">Battle Mechanics</h3>
+              <p className="text-slate-400 font-bold tracking-[0.2em]">勝利を掴むための3つのシステム</p>
             </div>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="w-full md:w-2/3 bg-white p-8 rounded-3xl shadow-xl relative"
-          >
-            <div className="absolute top-[-10px] left-1/2 md:top-10 md:left-[-10px] w-6 h-6 bg-white transform rotate-45"></div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <span className="text-3xl">🎓</span> AIの思考を読み解くのじゃ！
-            </h3>
-            <p className="text-slate-600 leading-7 mb-4">
-              ワシは「ペイント博士」じゃ。<br/>AIはキミの描いたイキモノの絵を見て、どの属性っぽいか判断しておる。<br/>
-              例えば、<span className="font-bold text-blue-500">「ヒレがあるから海タイプ」</span><span className="font-bold text-yellow-500">「翼があるから空タイプ」</span>といった具合じゃな。
-            </p>
-            <div className="bg-yellow-100 p-4 rounded-xl border border-yellow-200">
-              <p className="font-bold text-yellow-800 text-sm mb-1">💡 勝利のヒント</p>
-              <p className="text-slate-700 text-sm">
-                相手のモンスターの見た目をよく観察するんじゃ。「こいつはきっと空タイプだ！」と予想して、有利な属性で攻撃する心理戦がカギになるぞ！
-              </p>
+
+            <div className="grid lg:grid-cols-12 gap-16 items-center">
+              {/* 左：3すくみ画像 */}
+              <div className="lg:col-span-5 relative group">
+                <div className="absolute inset-0 bg-yellow-400/20 rounded-full blur-[100px]" />
+                <Image 
+                  src="/images/type_chart1.png" 
+                  alt="3-Way Deadlock System" 
+                  width={600} 
+                  height={600} 
+                  className="relative z-10 rounded-[30px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.1)] group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="mt-8 bg-slate-900 text-white p-4 rounded-2xl text-center z-10 relative shadow-xl">
+                  <p className="text-sm font-black italic">※バトル中、相手のタイプは隠されている！</p>
+                </div>
+              </div>
+
+              {/* 右：3つのルールのカード化 */}
+              <div className="lg:col-span-7 space-y-8">
+                {[
+                  {
+                    num: "01",
+                    title: "先攻・後攻の決定",
+                    icon: "⏱️",
+                    desc: "全ターン「じゃんけん」で勝負。勝った方が先に攻撃できる。終盤、相手のHPを削り切る一撃を先に放てるかが勝敗を分ける。",
+                    highlight: "先にHPを0にした方の勝ち"
+                  },
+                  {
+                    num: "02",
+                    title: "3属性の相性",
+                    icon: "🎯",
+                    desc: "相手の弱点タイプで攻撃すればダメージは1.5倍。逆に相性が悪いと 0.5倍に半減する。左の3すくみをマスターせよ。",
+                    highlight: "強気な一撃は1.5倍の威力"
+                  },
+                  {
+                    num: "03",
+                    title: "タイプ一致ボーナス",
+                    icon: "💪",
+                    desc: "自分のイキモノと同じ属性の技を使うと、さらに威力は1.5倍。自分の本領を発揮できる技をいつ出すかが重要だ。",
+                    highlight: "最大2.25倍の超ダメージ！"
+                  }
+                ].map((rule: { num: string; title: string; icon: string; desc: string; highlight: string }, i: number) => (
+                  <div key={i} className="flex gap-6 group">
+                    <div className="flex-shrink-0 w-16 h-16 bg-slate-100 rounded-[24px] flex items-center justify-center text-2xl font-black text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
+                      {rule.num}
+                    </div>
+                    <div className="pt-2">
+                      <h4 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3">
+                        {rule.title} <span className="text-2xl">{rule.icon}</span>
+                      </h4>
+                      <p className="text-slate-500 font-bold leading-relaxed mb-3">{rule.desc}</p>
+                      <span className="inline-block bg-yellow-100 text-yellow-700 text-xs font-black px-4 py-1 rounded-full uppercase tracking-widest">{rule.highlight}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 戦略のまとめ */}
+            <div className="mt-7 pt-10 border-t-2 border-slate-50">
+              <div className="bg-slate-900 text-white p-10 md:p-16 rounded-[50px] relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent pointer-events-none" />
+                <h4 className="text-2xl md:text-4xl font-black mb-6 italic tracking-tight">The Core Strategy: 予測の先にある勝利</h4>
+                <p className="text-lg md:text-xl font-bold text-slate-300 leading-9 text-justify">
+                  　バトルのルールはシンプルだが、<span className="text-blue-400 underline decoration-2 underline-offset-8">相手のタイプが見えない</span>ことが、このゲームを高度な心理戦へと変える。相手が描いた絵、選んだ名前、そして技名。AIがそこから何を読み取ったかを予測し、誰よりも早く最適な一撃を導き出すのじゃ。
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* --- 【順序変更】みんなの図鑑 --- */}
+      {/* --- みんなの図鑑 (手動スクロールの境界線バグ修正版) --- */}
       <section id="gallery" className="py-20 bg-white overflow-hidden relative">
         <div className="text-center mb-10 relative z-10">
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center justify-center gap-2">
             <span className="text-yellow-500">🎨</span> みんなの図鑑
           </h2>
-          <p className="text-slate-500 mt-2">これまでに生まれたユニークなモンスターたち</p>
+          <p className="text-slate-500 mt-2">これまでに生まれたユニークなイキモノたち</p>
         </div>
 
-        <div className="relative w-full before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-white before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:from-white after:to-transparent">
-          <motion.div
-            className="flex gap-8 w-max"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+        {/* 修正ポイント：
+            グラデーション（before/after）をこの親要素に持たせ、中身のスクロールに干渉させない。
+        */}
+        <div className="relative w-full before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-white before:to-transparent before:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:from-white after:to-transparent after:pointer-events-none">
+          
+          {/* スクロール本体：グラデーションクラスを削除し、純粋なコンテナに */}
+          <div
+            ref={galleryRef}
+            onMouseDown={handleInteractionStart}
+            onTouchStart={handleInteractionStart}
+            onMouseUp={handleInteractionEnd}
+            onMouseLeave={handleInteractionEnd}
+            onTouchEnd={handleInteractionEnd}
+            className="w-full overflow-x-auto pb-10 scrollbar-hide cursor-grab active:cursor-grabbing"
           >
-            {[...monsters, ...monsters].map((monster, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                className="relative w-64 h-80 bg-slate-50 rounded-3xl p-4 shadow-md border-2 border-slate-100 flex-shrink-0 group"
-              >
-                <div className="relative h-48 w-full rounded-2xl overflow-hidden bg-white mb-4">
-                  <Image src={monster.image} alt={monster.name} fill className="object-contain p-2" />
+            <div className="flex gap-10 w-max px-10 md:px-20">
+          {[...monsters, ...monsters, ...monsters].map((monster, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.05, y: -5 }}
+              // カード全体のパディングを p-6 から p-2 に大幅削減
+              className="relative w-[440px] h-[360px] bg-slate-50 rounded-[40px] p-2 shadow-md border-2 border-slate-100 flex-shrink-0 group flex flex-col"
+            >
+              {/* 画像エリア：高さを h-[210px] から h-[270px] に拡大し、余白をほぼゼロに */}
+              <div className="relative h-[270px] w-full rounded-[32px] overflow-hidden bg-white shadow-inner">
+                <Image 
+                  src={monster.image} 
+                  alt={monster.name} 
+                  fill 
+                  className="object-contain p-3" // 枠に当たりすぎないよう最小限のパディング
+                />
+              </div>
+
+              {/* テキストエリア：画像の下に綺麗に収まるよう調整 */}
+              <div className="flex items-center justify-between mt-auto px-5 pb-4">
+                <div className="text-left">
+                  <h3 className="text-2xl font-black text-slate-800 group-hover:text-blue-500 transition-colors leading-tight">
+                    {monster.name}
+                  </h3>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
+                    ENCYCLOPEDIA ENTRY NO.{monster.id.toString().padStart(3, '0')}
+                  </p>
                 </div>
-                <div className="text-center">
-                  <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full mb-2 ${monster.color}`}>
-                    {monster.type}タイプ
-                  </span>
-                  <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-500 transition-colors">{monster.name}</h3>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                <span className={`text-xs font-black px-4 py-2 rounded-full shadow-sm ${monster.color}`}>
+                  {monster.type}タイプ
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+          </div>
         </div>
       </section>
-      
+
       {/* --- 実績（数字とグラフ + 写真ギャラリー） --- */}
       <section id="achievement" ref={ref} className="py-24 px-4 bg-slate-800 text-white relative overflow-hidden">
         {/* 背景装飾 */}
@@ -448,7 +730,7 @@ export default function Home() {
                   transition={{ delay: index * 0.2 }}
                   className="bg-slate-700/50 rounded-2xl overflow-hidden border border-slate-600 backdrop-blur-sm group"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-80 overflow-hidden">
                     <Image
                       src={photo.src}
                       alt={photo.alt}
@@ -467,43 +749,95 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- 5. 開発レポート (変更なし) --- */}
-      <section id="tech" className="py-24 px-4 bg-slate-900 text-white border-t border-slate-800">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">開発レポート</h2>
-          <p className="text-slate-400 mb-16">About Development</p>
+{/* --- 5. 開発レポート (一新：4つの技術カードと強調された誘導) --- */}
+      <section id="tech" className="py-32 px-4 bg-slate-900 text-white border-t border-slate-800 relative overflow-hidden">
+        {/* 背景の装飾：エンジニアリングを感じさせる回路のようなライン */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-1/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+          <div className="absolute top-2/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+        </div>
 
-          {/* 詳細ページへのリンクを追加 */}
-          <Link href="/tech" className="inline-block mt-4 mb-16 text-blue-400 font-bold hover:underline">
-            もっと詳しい技術解説を読む →
-          </Link>
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter">開発レポート</h2>
+            <p className="text-slate-400 mb-16 font-bold tracking-[0.3em] uppercase">TECHNICAL STORY</p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-             {/* Tech Card 1 */}
-            <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-blue-500 transition-colors">
-              <div className="text-4xl mb-4">🖥️</div>
-              <h4 className="text-xl font-bold mb-3 text-blue-400">Hardware</h4>
-              <p className="text-slate-300 text-sm leading-6">
-                木材のカットからボタン配線、モニターの組み込みまで、全てチームで設計・製作した完全オリジナルのアーケード筐体です。
+                    {/* 開発者ページへの強力な誘導リンク */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <Link 
+              href="/tech" 
+              className="group relative inline-flex items-center gap-4 px-12 py-6 bg-white text-slate-900 font-black rounded-full hover:bg-blue-500 hover:text-white transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-blue-500/40 overflow-hidden"
+            >
+              <span className="relative z-10 text-xl tracking-tight">開発の裏側を詳しく見る</span>
+              <span className="relative z-10 text-2xl group-hover:translate-x-2 transition-transform duration-300">→</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </Link>
+            <p className="mt-8 mb-10 text-slate-500 font-bold text-sm animate-pulse">
+              「pAInt」開発の裏側と、成功に至るまでの道のりを公開中
+            </p>
+          </motion.div>
+
+          {/* 4つの技術カードグリッド */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 text-left">
+             {/* 1. Hardware */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-blue-500 transition-all duration-300 backdrop-blur-sm"
+            >
+              <div className="text-3xl mb-6 bg-blue-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">⚙️</div>
+              <h4 className="text-xl font-black mb-3 text-blue-400 italic">Hardware</h4>
+              <p className="text-slate-400 text-sm leading-7 font-bold">
+                木材の筐体設計から3Dプリンタによる専用コントローラー製作、配線まで。手触りと没入感を追求した完全自作のアーケード。
               </p>
-            </div>
-             {/* Tech Card 2 */}
-             <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-green-500 transition-colors">
-              <div className="text-4xl mb-4">🎮</div>
-              <h4 className="text-xl font-bold mb-3 text-green-400">Software</h4>
-              <p className="text-slate-300 text-sm leading-6">
-                Unity (C#) を使用してゲームロジックを実装。子供たちが直感的に遊べるよう、UI/UXデザインには何度も改良を重ねました。
+            </motion.div>
+
+             {/* 2. Frontend */}
+             <motion.div 
+              whileHover={{ y: -5 }}
+              className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-green-500 transition-all duration-300 backdrop-blur-sm"
+            >
+              <div className="text-3xl mb-6 bg-green-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🎮</div>
+              <h4 className="text-xl font-black mb-3 text-green-400 italic">Frontend</h4>
+              <p className="text-slate-400 text-sm leading-7 font-bold">
+                Unity (C#) を使用。お絵描き、バトル演出、AI通信を統合する複雑なステート管理を行い、5分間の濃密なUXを構築。
               </p>
-            </div>
-             {/* Tech Card 3 */}
-             <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-purple-500 transition-colors">
-              <div className="text-4xl mb-4">🧠</div>
-              <h4 className="text-xl font-bold mb-3 text-purple-400">AI / Backend</h4>
-              <p className="text-slate-300 text-sm leading-6">
-                Pythonサーバーと連携し、生成AIが描かれた絵をリアルタイム解析。安全性を考慮したプロンプトエンジニアリングを行っています。
+            </motion.div>
+
+             {/* 3. Backend */}
+             <motion.div 
+              whileHover={{ y: -5 }}
+              className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-blue-400 transition-all duration-300 backdrop-blur-sm"
+            >
+              <div className="text-3xl mb-6 bg-blue-400/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🌐</div>
+              <h4 className="text-xl font-black mb-3 text-blue-300 italic">Backend</h4>
+              <p className="text-slate-400 text-sm leading-7 font-bold">
+                GASを核とした設計。Google Drive/Sheets/LINE/Slackを統合し、図鑑生成から運用監視までを行う自律型パイプライン。
               </p>
-            </div>
+            </motion.div>
+
+             {/* 4. AI Integration */}
+             <motion.div 
+              whileHover={{ y: -5 }}
+              className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-purple-500 transition-all duration-300 backdrop-blur-sm"
+            >
+              <div className="text-3xl mb-6 bg-purple-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🧠</div>
+              <h4 className="text-xl font-black mb-3 text-purple-400 italic">AI Integration</h4>
+              <p className="text-slate-400 text-sm leading-7 font-bold">
+                GPT-4o Visionを活用。描画画像から属性や名前、判断理由を論理的に抽出する高度なプロンプトエンジニアリングを実装。
+              </p>
+            </motion.div>
           </div>
+
+
         </div>
       </section>
 

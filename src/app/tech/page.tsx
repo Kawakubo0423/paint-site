@@ -147,10 +147,10 @@ export default function TechDetail() {
             </h2>
             <div className="grid md:grid-cols-2 gap-16 text-lg md:text-xl font-bold leading-relaxed opacity-90 text-justify">
               <p>
-                　生成AIの急速な普及により、高度な技術であったAIは私たちの身近な存在となりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考過程はブラックボックスのままです。しかし、これからの時代はAIの利便性や懸念点を理解した上で活用することが重要になってきます。
+                　生成AIの急速な普及により、かつては高度な技術だったAIは、今や私たちの身近な存在になりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考の過程は、依然としてブラックボックスのままです。これからの時代に求められるのは、AIを便利な道具として使うことだけではなく、その特性や限界、考え方を理解した上で共に向き合う姿勢だと私たちは考えました。
               </p>
               <p>
-                　そこで私たちは、AIの思考過程や考え方を誰もが直感的に体験できる形で可視化し、AIとの新たな向き合い方を提案したいと考えました。<br />　これが、多くの人が楽しめる<span className="text-blue-400">ゲーム</span>の中に、<span className="text-blue-400">AIへの学び</span>を取り入れた「pAInt」プロジェクトの始まりです。
+                　そこで私たちは、AIの思考や判断の仕組みを、誰もが直感的に体験できる形で可視化できないかと考えました。ただ学ぶのではなく、遊びの中で自然に触れ、理解が深まる体験をつくること。こうして生まれたのが、<span className="text-blue-400">ゲーム体験の中に、AIへの学び</span>を組み込んだ「pAInt」プロジェクトです。
               </p>
             </div>
           </motion.div>
@@ -182,9 +182,9 @@ export default function TechDetail() {
                 >
                   <p className="mb-8 italic text-slate-900 text-2xl font-black border-l-8 border-blue-500 pl-6">画面の中だけで完結させない、新たな体験を。</p>
                   <div className="text-lg font-bold text-slate-600 leading-9 space-y-6">
-                    <p>● 私たちは、通りすがりの人が「面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong>アーケード筐体そのものから設計</strong>を行いました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。</p>
-                    <p>● 入力デバイスも、市販品ではなく<strong>3Dプリンタを利用した専用コントローラー</strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。</p>
-                    <p>● 最大の特徴は、デジタルとリアルを融合させる<strong>贅沢な2画面構成</strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。アナログな感触をあえて残すことで、没入感を両立させています。</p>
+                    <p>● 私たちは、通りすがりの人が「面白そうだからやってみよう」と思える気軽なプレイ体験を目指し、<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">アーケード筐体そのものから制作</span></strong>しました。素材には加工のしやすい木材を選定。材料調達から組み立て、ゲームの世界観を体現した目を引く塗装まで、すべて自分たちで担当しました。</p>
+                    <p>● 入力デバイスも、市販品ではなく<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">3Dプリンタを利用した専用コントローラー</span></strong>を自作。直感的な「持ちやすさ」を追求すると同時に、配線作業も自ら行うことでアーケード特有の「ボタンを叩く感触」にもこだわりました。</p>
+                    <p>● もう一つの特徴は、デジタルとリアルを融合させる<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">贅沢な2画面構成</span></strong>です。メイン画面ではド派手な演出とバトルを担当し、手元にはサブ画面と「お絵描き用タブレット」を配置。アナログな感触をあえて残すことで、没入感を両立させています。</p>
                   </div>
                 </motion.div>
               </div>
@@ -192,7 +192,7 @@ export default function TechDetail() {
               <div className="lg:col-span-5 flex flex-col gap-5">
                 {[
                   { src: "/images/controller1.jpg", label: "Custom Controller" },
-                  { src: "/images/working_photo1.jpg", label: "Manufacturing" }
+                  { src: "/images/working_photo1.jpg", label: "DUAL-SCREEN INTERACTION" }
                 ].map((img, i) => (
                   <motion.div 
                     key={i} 
@@ -211,7 +211,7 @@ export default function TechDetail() {
 
           {/* 4. Software */}
           <div>
-            <SubHeader emoji="🖥️">Software: 複雑なロジックの統合</SubHeader>
+            <SubHeader emoji="🎮">Software: 複雑なロジックの統合</SubHeader>
             <div className="grid lg:grid-cols-12 gap-8 items-stretch">
               <div className="lg:col-span-7 bg-white/60 backdrop-blur-xl p-8 rounded-[60px] shadow-2xl border-4 border-white relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400" />
@@ -258,7 +258,7 @@ export default function TechDetail() {
                 <div className="w-16 h-16 bg-red-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10">01</div>
                 <div className="flex-1">
                   <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
-                    <Image src="/images/ux_improvement_flow.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
+                    <Image src="/images/ux_improvement_flow1.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function TechDetail() {
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
                 <div className="flex-1 order-3 lg:order-1">
                   <motion.div whileHover={{ scale: 1.05, rotate: -2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-blue-50">
-                    <Image src="/images/event2.png" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
+                    <Image src="/images/event3.png" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
                 <div className="w-16 h-16 bg-blue-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10 order-1 lg:order-2">02</div>
