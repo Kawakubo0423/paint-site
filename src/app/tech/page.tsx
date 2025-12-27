@@ -24,29 +24,41 @@ const SubHeader = ({ children, emoji }: { children: string; emoji: string }) => 
   </motion.div>
 );
 
-// --- こだわりカードコンポーネント ---
-const DetailCard = ({ title, children, color, isCompact = false }: { title: string; children: React.ReactNode; color: string; isCompact?: boolean }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    whileHover={{ y: -10 }}
-    className={`
-      px-8 rounded-[50px] bg-white/40 backdrop-blur-xl border-2 ${color}
-      shadow-[0_20px_50px_rgba(0,0,0,0.03)]
-      h-full flex flex-col transition-all duration-500 group
-      ${isCompact ? 'py-8 min-h-0' : 'py-12 min-h-[520px]'}
-    `}
-  >
-    <h3 className={`font-black mb-6 italic flex items-center gap-3 leading-tight group-hover:scale-105 transition-transform duration-300 ${isCompact ? 'text-xl' : 'text-2xl xl:text-3xl'} ${color.replace('border-', 'text-')}`}>
-      <span className="w-5 h-5 rounded-full bg-current shadow-[0_0_15px_rgba(0,0,0,0.1)]"></span>
-      <span className={isCompact ? '' : 'whitespace-nowrap'}>{title}</span>
-    </h3>
-    <div className={`text-slate-700 font-bold space-y-4 flex-grow text-justify ${isCompact ? 'text-[14px] leading-relaxed' : 'text-[18px] leading-[2.0]'}`}>
-      {children}
-    </div>
-  </motion.div>
-);
+// --- こだわりカードコンポーネント（ビルド時のクラスパージ対策版） ---
+const DetailCard = ({ title, children, color, isCompact = false }: { title: string; children: React.ReactNode; color: string; isCompact?: boolean }) => {
+  // Tailwind CSSのパージ対策：クラス名をフルパスで定義したマッピングを用意します
+  const textColorMap: { [key: string]: string } = {
+    "border-green-500": "text-green-500",
+    "border-blue-500": "text-blue-500",
+    "border-purple-500": "text-purple-500",
+    "border-red-500": "text-red-500",
+    "border-yellow-500": "text-yellow-600", // 黄色は視認性の高い600を使用
+  };
+  const textColor = textColorMap[color] || "text-slate-800";
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      whileHover={{ y: -10 }}
+      className={`
+        px-8 rounded-[50px] bg-white/40 backdrop-blur-xl border-2 ${color}
+        shadow-[0_20px_50px_rgba(0,0,0,0.03)]
+        h-full flex flex-col transition-all duration-500 group
+        ${isCompact ? 'py-8 min-h-0' : 'py-12 min-h-[520px]'}
+      `}
+    >
+      <h3 className={`font-black mb-6 italic flex items-center gap-3 leading-tight group-hover:scale-105 transition-transform duration-300 ${isCompact ? 'text-xl' : 'text-2xl xl:text-3xl'} ${textColor}`}>
+        <span className="w-5 h-5 rounded-full bg-current shadow-[0_0_15px_rgba(0,0,0,0.1)]"></span>
+        <span className={isCompact ? '' : 'whitespace-nowrap'}>{title}</span>
+      </h3>
+      <div className={`text-slate-700 font-bold space-y-4 flex-grow text-justify ${isCompact ? 'text-[14px] leading-relaxed' : 'text-[18px] leading-[2.0]'}`}>
+        {children}
+      </div>
+    </motion.div>
+  );
+};
 
 export default function TechDetail() {
   const { scrollYProgress } = useScroll();
@@ -148,7 +160,7 @@ export default function TechDetail() {
             <SubHeader emoji="🎯">プロダクトを支える3つの柱</SubHeader>
             <div className="grid md:grid-cols-3 gap-10">
               <DetailCard title="筐体という存在感" color="border-blue-500">
-                <p>　ネットの海に埋もれるデジタル作品ではなく、<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">大学の廊下</span></strong>という現実空間で勝負。アーケード筐体という形式が生む非日常性によって、通りすがりの人の好奇心を引き出し、「思わず触ってしまう」体験を生み出します。<br />　私たちはこの<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">偶発的な出会い</span></strong>をエンターテインメントとして最大化し、筐体だからこそ実現できる、唯一無二の体験価値を追求しました。</p>
+                <p>　ネットの海に埋もれるデジタル作品ではなく、<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">大学の廊下</span></strong>という現実空間で勝負。アーケード筐体という形式が生む非日常性によって、通りすがりの人の好奇心を引き出し、「思わず触れてしまう」体験を生み出します。<br />　私たちはこの<strong><span className="text-blue-600 underline decoration-blue-200 decoration-4 underline-offset-4">偶発的な出会い</span></strong>をエンターテインメントとして最大化し、筐体だからこそ実現できる、唯一無二の体験価値を追求しました。</p>
               </DetailCard>
               <DetailCard title="徹底したユーザ目線" color="border-red-500">
                 <p>　当初は、想定通りには機能しない場面も多く、体験の途中で離脱してしまうユーザが少なくありませんでした。そこで私たちは、ユーザへの<strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">ヒアリングやアンケート、ログ分析</span></strong>を通じて原因を可視化し、UI/UXや体験時間を徹底的に見直しました。<br />　常に「作りたいもの」ではなく<strong><span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">「遊ばれ続ける体験」</span></strong>を基準に改善を重ねたことが、pAIntの体験設計を支えています。</p>
@@ -179,7 +191,6 @@ export default function TechDetail() {
 
               <div className="lg:col-span-5 flex flex-col gap-5">
                 {[
-                  
                   { src: "/images/controller1.jpg", label: "Custom Controller" },
                   { src: "/images/working_photo1.jpg", label: "Manufacturing" }
                 ].map((img, i) => (
