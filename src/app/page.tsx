@@ -252,12 +252,12 @@ export default function Home() {
       <motion.div
         initial={{ scale: 1.0, opacity: 0, y: -40 }}
         animate={isZooming ? {
-          scale: 18, 
+          scale: 7, 
           opacity: [1, 1, 0],
           y: 0,
           transition: { 
               duration: 2.0, 
-              ease: [0.4, 0, 0.55, 1],
+              ease: [0.2, 0.4, 0.6, 1],
               opacity: { times: [0, 0.8, 1], duration: 2.0 } 
           }
         } : { 
@@ -283,7 +283,7 @@ export default function Home() {
           priority
         />
 
-        {/* PRESS START テキスト */}
+{/* PRESS START テキスト（筐体の画面内に配置） */}
         {!isZooming && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -292,30 +292,25 @@ export default function Home() {
           >
             <motion.div
               animate={{ opacity: [1, 0] }} 
-              transition={{ 
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut"
-              }}
+              transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
               style={{ top: "35%" }}
-              className="absolute bg-black/80 px-6 py-2 rounded-lg border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.5)] flex flex-col items-center"
+              className="absolute bg-black/80 px-6 py-3 rounded-lg border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] flex flex-col items-center"
             >
-              <p className="text-white font-black tracking-[0.3em] text-sm md:text-xl italic">
+              <p className="text-white font-black tracking-[0.3em] text-sm md:text-xl italic leading-none">
                 ー PRESS START ー
               </p>
               <p className="text-slate-400 font-bold text-[8px] md:text-[10px] mt-2 tracking-widest uppercase">
-                Click to Play
+                Click Screen
               </p>
             </motion.div>
           </motion.div>
         )}
       </motion.div>
 
-      {/* 3. 最前面：放射状の光（2層レイヤー・開始方向をずらして最適化） */}
+      {/* --- 3. 最前面：放射状の光（3層レイヤー・開始方向をずらして密度アップ） --- */}
       {isZooming && (
         <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
-          {/* レイヤーA: 角度45度から高速回転 */}
+          {/* レイヤーA: 角度45度から高速回転（青・白） */}
           <motion.div
             initial={{ rotate: 45, scale: 0, opacity: 0 }}
             animate={{ rotate: 405, scale: 4, opacity: [0, 1, 0] }}
@@ -333,7 +328,7 @@ export default function Home() {
             />
           </motion.div>
 
-          {/* レイヤーB: 角度-90度から逆回転（開始方向と速度をずらす） */}
+          {/* レイヤーB: 角度-110度から逆回転（白・透過） */}
           <motion.div
             initial={{ rotate: -110, scale: 0, opacity: 0 }}
             animate={{ rotate: -270, scale: 5, opacity: [0, 0.8, 0] }}
@@ -347,6 +342,24 @@ export default function Home() {
                 background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.4) 15deg, transparent 30deg)',
                 maskImage: 'radial-gradient(circle, black 20%, transparent 60%)',
                 filter: 'blur(3px)'
+              }}
+            />
+          </motion.div>
+
+          {/* 【新設】レイヤーC: 角度200度から低速回転（淡い光・広範囲） */}
+          <motion.div
+            initial={{ rotate: 250, scale: 0, opacity: 0 }}
+            animate={{ rotate: 560, scale: 6, opacity: [0, 0.6, 0] }}
+            transition={{ duration: 1.7, ease: "circIn", delay: 0.2 }}
+            style={{ willChange: "transform", transform: 'translateZ(0)' }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div 
+              className="w-[150vmax] h-[150vmax]" 
+              style={{
+                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.2) 20deg, transparent 40deg)',
+                maskImage: 'radial-gradient(circle, black 10%, transparent 50%)',
+                filter: 'blur(6px)'
               }}
             />
           </motion.div>
