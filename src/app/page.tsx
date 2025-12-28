@@ -89,8 +89,38 @@ const achievementPhotos = [
 
 
 export default function Home() {
+  const [showIntro, setShowIntro] = useState(true); // イントロ全体の表示フラグ
+  const [isZooming, setIsZooming] = useState(false); // ズーム開始のトリガー
+
+  // 【修正】自動ズームの useEffect は削除、または初期表示のフェードインのみに変更
+  useEffect(() => {
+    // ページ読み込み時に何か初期化が必要ならここで行う
+  }, []);
+
+  // ズーム終了後にイントロUIを完全に削除するハンドラ
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+  };
+  const handleStart = () => {
+    if (!isZooming) {
+      setIsZooming(true);
+    }
+  };
+
   const [selectedStep, setSelectedStep] = useState<number | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPvOpen, setIsPvOpen] = useState(false); // 【追加】PVモーダル用
+  // --- 【追加】PVの比率を管理するState ---
+  const [pvAspectRatio, setPvAspectRatio] = useState<number>(16 / 9);
+
+  // 動画読み込み時に比率を計算するハンドラ
+  const handleVideoLoad = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    const video = e.currentTarget;
+    if (video.videoWidth && video.videoHeight) {
+      setPvAspectRatio(video.videoWidth / video.videoHeight);
+    }
+  };
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 100], [0, 0.9]);
   const headerY = useTransform(scrollY, [0, 100], [-20, 0]);
@@ -148,6 +178,226 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-slate-50 selection:bg-yellow-200 selection:text-slate-900">
+{/* --- 【修正版】没入型イントロオーバーレイ（確実に動く最適化） --- */}
+<AnimatePresence>
+  {showIntro && (
+    <motion.div
+      key="intro-overlay"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-white overflow-hidden"
+      style={{ backfaceVisibility: "hidden" }}
+    >
+      {/* 1. 背景の浮遊粒子：位置を style(left/top) で固定し、x/y で揺らす */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[
+          { color: "bg-red-500", size: "w-72 h-72", x: "15%", y: "20%", d: 12, move: 40 },
+          { color: "bg-blue-500", size: "w-96 h-96", x: "75%", y: "15%", d: 15, move: -50 },
+          { color: "bg-yellow-500", size: "w-80 h-80", x: "25%", y: "65%", d: 18, move: 30 },
+          { color: "bg-red-400", size: "w-56 h-56", x: "85%", y: "75%", d: 10, move: -20 },
+          { color: "bg-blue-400", size: "w-[400px] h-[400px]", x: "45%", y: "85%", d: 20, move: 60 },
+          { color: "bg-yellow-400", size: "w-64 h-64", x: "55%", y: "10%", d: 14, move: -40 },
+        ].map((p, i) => (
+          <motion.div
+            key={i}
+            // style で初期位置を画面全体に散らす
+            style={{ left: p.x, top: p.y }}
+            className={`absolute ${p.color} ${p.size} rounded-full blur-[80px]`}
+            initial={{ opacity: 0, scale: 1 }}
+            animate={isZooming ? {
+              // ズーム時は画面中央付近へ吸い込まれる
+              left: "50%",
+              top: "38%",
+              scale: 0,
+              opacity: 0,
+              transition: { duration: 1.5, ease: "circIn" }
+            } : {
+              // 待機時：ホワホワと移動・明滅
+              opacity: [0.3, 0.6, 0.3],
+              x: [0, p.move, 0], // move値を使って個別に揺らす
+              y: [0, -p.move, 0],
+              scale: [1, 1.1, 1],
+              transition: { 
+                duration: p.d, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 1. 背後のエナジーオーラ（中略：以前と同じ） */}
+      {isZooming && (
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          <motion.div
+            initial={{ scale: 1, opacity: 0 }}
+            animate={{ scale: 2, opacity: [0, 0.7, 0] }}
+            transition={{ duration: 1.8, ease: "circIn" }}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ willChange: "transform, opacity" }}
+          >
+            <div 
+              className="w-[80vw] h-[80vw] rounded-full blur-[80px]"
+              style={{
+                background: 'radial-gradient(circle, #ef4444 0%, #3b82f6 40%, #eab308 70%, transparent 100%)',
+                transform: 'translateZ(0)'
+              }}
+            />
+          </motion.div>
+        </div>
+      )}
+
+      {/* 2. 筐体本体（中略：以前と同じ） */}
+      <motion.div
+        initial={{ scale: 1.0, opacity: 0, y: -40 }}
+        animate={isZooming ? {
+          scale: 18, 
+          opacity: [1, 1, 0],
+          y: 0,
+          transition: { 
+              duration: 2.0, 
+              ease: [0.4, 0, 0.55, 1],
+              opacity: { times: [0, 0.8, 1], duration: 2.0 } 
+          }
+        } : { 
+          scale: 1, opacity: 1, y: 0,
+          transition: { duration: 0.8 }
+        }}
+        onAnimationComplete={() => isZooming && handleIntroComplete()}
+        style={{ 
+          originX: 0.5,
+          originY: 0.36,
+          zIndex: 20,
+          willChange: "transform, opacity",
+          transform: 'translateZ(0)'
+        }}
+        className="relative w-[400px] h-[690px] md:w-[800px] md:h-[1200px]"
+        onClick={handleStart}
+      >
+        <Image 
+          src="/images/arcade-front-paint1.png" 
+          alt="Arcade Machine Intro" 
+          fill 
+          className="object-contain"
+          priority
+        />
+
+        {/* PRESS START テキスト */}
+        {!isZooming && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 flex flex-col items-center pointer-events-none"
+          >
+            <motion.div
+              animate={{ opacity: [1, 0] }} 
+              transition={{ 
+                duration: 0.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }}
+              style={{ top: "35%" }}
+              className="absolute bg-black/80 px-6 py-2 rounded-lg border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.5)] flex flex-col items-center"
+            >
+              <p className="text-white font-black tracking-[0.3em] text-sm md:text-xl italic">
+                ー PRESS START ー
+              </p>
+              <p className="text-slate-400 font-bold text-[8px] md:text-[10px] mt-2 tracking-widest uppercase">
+                Click to Play
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* 3. 最前面：放射状の光（2層レイヤー・開始方向をずらして最適化） */}
+      {isZooming && (
+        <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+          {/* レイヤーA: 角度45度から高速回転 */}
+          <motion.div
+            initial={{ rotate: 45, scale: 0, opacity: 0 }}
+            animate={{ rotate: 405, scale: 4, opacity: [0, 1, 0] }}
+            transition={{ duration: 1.5, ease: "circIn" }}
+            style={{ willChange: "transform", transform: 'translateZ(0)' }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div 
+              className="w-[150vmax] h-[150vmax]" 
+              style={{
+                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, #3b82f6 2deg, transparent 5deg, white 10deg, transparent 15deg)',
+                maskImage: 'radial-gradient(circle, black 30%, transparent 70%)',
+                filter: 'blur(1px)'
+              }}
+            />
+          </motion.div>
+
+          {/* レイヤーB: 角度-90度から逆回転（開始方向と速度をずらす） */}
+          <motion.div
+            initial={{ rotate: -110, scale: 0, opacity: 0 }}
+            animate={{ rotate: -270, scale: 5, opacity: [0, 0.8, 0] }}
+            transition={{ duration: 1.3, ease: "circIn", delay: 0.1 }}
+            style={{ willChange: "transform", transform: 'translateZ(0)' }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div 
+              className="w-[150vmax] h-[150vmax]" 
+              style={{
+                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.4) 15deg, transparent 30deg)',
+                maskImage: 'radial-gradient(circle, black 20%, transparent 60%)',
+                filter: 'blur(3px)'
+              }}
+            />
+          </motion.div>
+
+          {/* 中央コア */}
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: [0, 2, 8], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.4, ease: "circIn" }}
+            className="absolute w-40 h-40 bg-white rounded-full blur-[30px]"
+          />
+        </div>
+      )}
+
+      {/* 4. ホワイトアウト */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={isZooming ? { 
+          opacity: [0, 0, 1, 0],
+          transition: { times: [0, 0.7, 0.85, 1], duration: 2.0 } 
+        } : { opacity: 0 }}
+        className="absolute inset-0 bg-white z-40 pointer-events-none"
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
+
+{/* --- 2. メインコンテンツ：飛び出してくる演出（爆発エフェクト） --- */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.3, filter: "blur(20px)" }}
+        animate={!showIntro ? { 
+          opacity: 1, 
+          scale: 1, 
+          filter: "blur(0px)",
+          transition: { 
+            duration: 1.2, 
+            ease: [0.22, 1, 0.36, 1], // 強力な減速で「着地」感を出す
+            delay: 0.1
+          } 
+        } : {}}
+        className="relative"
+      >
+        {/* コンテンツが表示される瞬間の残光演出 */}
+        {!showIntro && (
+          <motion.div
+            initial={{ opacity: 1, scale: 0.8 }}
+            animate={{ opacity: 0, scale: 2 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="absolute inset-0 z-[60] bg-white pointer-events-none"
+          />
+        )}</motion.div>
       
       {/* --- ヘッダー --- */}
       <motion.header 
@@ -169,52 +419,53 @@ export default function Home() {
         </nav>
       </motion.header>
 
-      {/* --- 1. ヒーローセクション (変更なし) --- */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-bg7.jpg"
-            alt="Main Background"
-            fill
-            className="object-cover brightness-[0.8]"
-            priority
-          />
-        </div>
+{/* --- 1. ヒーローセクション --- */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/hero-bg7.jpg"
+              alt="Main Background"
+              fill
+              className="object-cover brightness-[0.8]"
+              priority
+            />
+          </div>
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, type: "spring" }}
-            className="relative w-80 h-40 md:w-[600px] md:h-[300px] -mt-30 mb-50"
-          >
-             <Image src="/images/logo1.jpg" alt="pAInt Logo" fill className="object-contain drop-shadow-2xl" />
-          </motion.div>
+          <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
+            {/* ロゴの飛び出しを少し強調 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={!showIntro ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.3, duration: 1, type: "spring" }}
+              className="relative w-80 h-40 md:w-[600px] md:h-[300px] -mt-30 mb-50"
+            >
+               <Image src="/images/logo1.jpg" alt="pAInt Logo" fill className="object-contain drop-shadow-2xl" />
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-          >
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-wider leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-              描いた絵が、動き出す。<br />
-              キミだけの<span className="text-yellow-400">イキモノ</span>を創り出せ！
-            </h1>
-            <p className="text-lg md:text-xl text-white font-bold bg-slate-900/50 inline-block px-8 py-3 rounded-full backdrop-blur-sm border border-white/20">
-              アーケード筐体 × 生成AI × 心理戦バトル
-            </p>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={!showIntro ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-wider leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                描いた絵が、動き出す。<br />
+                キミだけの<span className="text-yellow-400">イキモノ</span>を創り出せ！
+              </h1>
+              <p className="text-lg md:text-xl text-white font-bold bg-slate-900/50 inline-block px-8 py-3 rounded-full backdrop-blur-sm border border-white/20">
+                アーケード筐体 × 生成AI × 心理戦バトル
+              </p>
+            </motion.div>
 
-          <motion.div
-            className="absolute top-150"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
-            <p className="text-white text-xs font-bold tracking-widest mb-2">SCROLL</p>
-            <div className="w-6 h-6 border-b-4 border-r-4 border-white rotate-45 mx-auto"></div>
-          </motion.div>
-        </div>
-      </section>
+            <motion.div
+              className="absolute top-150"
+              animate={{ y: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <p className="text-white text-xs font-bold tracking-widest mb-2">SCROLL</p>
+              <div className="w-6 h-6 border-b-4 border-r-4 border-white rotate-45 mx-auto"></div>
+            </motion.div>
+          </div>
+        </section>
 
       {/* --- 2. pAIntとは？ (変更なし) --- */}
       <section id="about" className="py-24 px-4 bg-white relative overflow-hidden">
@@ -273,13 +524,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- 3. あそびかた (モーダル起動ボタンを追加) --- */}
+ {/* --- 3. あそびかた (PV小窓・拡大機能付き) --- */}
       <section id="howtoplay" className="py-24 px-4 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-center text-3xl md:text-5xl font-extrabold text-slate-800 mb-16">
             あそびかた
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+
+          {/* 既存のSTEPカードグリッド */}
+          <div className="grid md:grid-cols-3 gap-8 mb-20">
             {howToPlayDetails.map((step) => (
               <motion.div 
                 key={step.id}
@@ -298,7 +551,6 @@ export default function Home() {
                   {step.id === 2 && "「陸(グー)」「海(パー)」「空(チョキ)」の3すくみバトル！属性を見極めろ。"}
                   {step.id === 3 && "バトル後はQRコードで図鑑をゲット。LINEでいつでも見返せる！"}
                 </p>
-                {/* 詳しく見るボタン */}
                 <button 
                   onClick={() => setSelectedStep(step.id)}
                   className={`w-full py-3 rounded-xl font-bold text-white transition-opacity hover:opacity-90 shadow-md ${step.id === 1 ? 'bg-red-500' : step.id === 2 ? 'bg-blue-500' : 'bg-yellow-500'}`}
@@ -308,8 +560,85 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+
+          {/* --- 【新設】プロジェクトPV・小窓エリア --- */}
+          <div className="flex flex-col items-center">
+          <motion.div
+            whileHover={{ scale: 1.05, y: -5 }}
+            onClick={() => setIsPvOpen(true)}
+            // styleに aspect-ratio を適用。aspect-[6/4] は削除。
+            style={{ aspectRatio: pvAspectRatio }}
+            className="relative w-full max-w-sm rounded-[40px] overflow-hidden shadow-xl border-[8px] border-white bg-slate-900 cursor-pointer group"
+          >
+            {/* 背景で薄く流れるプレビュー */}
+            <video
+              src="/videos/pv_15s.mp4"
+              
+              loop
+              muted
+              playsInline
+              onLoadedMetadata={handleVideoLoad} // ここでサイズを取得
+              className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+            />
+              
+              {/* 中央の再生アイコン */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-yellow-400 group-hover:border-yellow-400 transition-all duration-300">
+                  <span className="text-2xl ml-1 group-hover:text-slate-900">▶</span>
+                </div>
+                <p className="mt-4 font-black tracking-[0.2em] text-xs opacity-80 group-hover:opacity-100">PLAY PV</p>
+              </div>
+
+              {/* 右上のLIVEバッジ風装飾 */}
+              <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="text-[8px] font-bold tracking-widest text-white uppercase">15s Demo</span>
+              </div>
+            </motion.div>
+            <p className="mt-6 text-slate-400 font-bold text-xs tracking-widest uppercase text-center">
+               Click to expand gameplay video
+            </p>
+          </div>
         </div>
       </section>
+
+{/* --- PV拡大モーダル --- */}
+<AnimatePresence>
+  {isPvOpen && (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setIsPvOpen(false)}
+        className="absolute inset-0 bg-slate-900/90 backdrop-blur-md"
+      />
+      
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        // styleに比率を適用。aspect-[4/3] を削除。
+        style={{ aspectRatio: pvAspectRatio }}
+        className="relative w-full max-w-5xl bg-black rounded-[40px] shadow-2xl overflow-hidden border-2 border-white/20"
+      >
+        <button 
+          onClick={() => setIsPvOpen(false)}
+          className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-20"
+        >
+          ✕
+        </button>
+
+        <video 
+          src="/videos/pv_15s.mp4" 
+          autoPlay 
+          controls
+          className="w-full h-full object-contain"
+        />
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
 
       {/* --- 【新セクション】選べる3つのゲームモード --- */}
       <section id="modes" className="py-24 px-4 bg-white">
