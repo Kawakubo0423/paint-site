@@ -82,7 +82,7 @@ export default function TechDetail() {
             scale: [1, 1.1, 1] 
           }} 
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-400/15 rounded-full blur-[100px] will-change-transform" 
+          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-400/15 rounded-full blur-[120px] will-change-transform" 
         />
         {/* 赤のインク */}
         <motion.div 
@@ -113,7 +113,7 @@ export default function TechDetail() {
           </Link>
           <div className="text-right">
             <span className="text-[10px] font-black text-slate-400 tracking-[0.5em] uppercase block">Development Story</span>
-            <span className="text-[10px] font-black text-blue-500 uppercase">Interactive Report</span>
+            <span className="text-[10px] font-black text-blue-500 uppercase">TECHNICAL Report</span>
           </div>
         </div>
       </nav>
@@ -147,10 +147,10 @@ export default function TechDetail() {
             </h2>
             <div className="grid md:grid-cols-2 gap-16 text-lg md:text-xl font-bold leading-relaxed opacity-90 text-justify">
               <p>
-                　生成AIの急速な普及により、かつては高度な技術だったAIは、今や私たちの身近な存在になりました。一方で、AIが<span className="text-blue-400">「なぜその答えを出したのか」</span>という思考の過程は、依然としてブラックボックスのままです。これからの時代に求められるのは、AIを便利な道具として使うことだけではなく、その特性や限界、考え方を理解した上で共に向き合う姿勢だと私たちは考えました。
+                　生成AIの急速な普及により、かつては高度な技術だったAIは、今や私たちの身近な存在になりました。一方で、AIが<strong><span className="text-blue-400 underline decoration-blue-300 decoration-2 underline-offset-4">「なぜその答えを出したのか」</span></strong>という思考の過程は、依然としてブラックボックスのままです。これからの時代に求められるのは、AIを便利な道具として使うことだけではなく、その特性や限界、考え方を理解した上で共に向き合う姿勢だと私たちは考えました。
               </p>
               <p>
-                　そこで私たちは、AIの思考や判断の仕組みを、誰もが直感的に体験できる形で可視化できないかと考えました。ただ学ぶのではなく、遊びの中で自然に触れ、理解が深まる体験をつくること。こうして生まれたのが、<span className="text-blue-400">ゲーム体験の中に、AIへの学び</span>を組み込んだ「pAInt」プロジェクトです。
+                　そこで私たちは、AIの思考や判断の仕組みを、誰もが直感的に体験できる形で可視化できないかと考えました。ただ学ぶのではなく、遊びの中で自然に触れ、理解が深まる体験をつくること。こうして生まれたのが、<strong><span className="text-blue-400 underline decoration-blue-300 decoration-2 underline-offset-4">ゲーム体験の中に、AIへの学び</span></strong>を組み込んだ「pAInt」プロジェクトです。
               </p>
             </div>
           </motion.div>
@@ -222,11 +222,11 @@ export default function TechDetail() {
               </div>
 
               <div className="lg:col-span-5 flex flex-col gap-6">
-                <DetailCard title="Frontend" color="border-green-500" isCompact>
+                <DetailCard title="Front-end" color="border-green-500" isCompact>
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">Unity / C#</span>
                   <p className="text-base leading-relaxed">お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。</p>
                 </DetailCard>
-                <DetailCard title="Backend" color="border-blue-500" isCompact>
+                <DetailCard title="Back-end" color="border-blue-500" isCompact>
                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">GAS / DRIVE / SHEETS / LINE API/ SLACK API</span>
                    <div className="text-sm space-y-3 pb-10">
                     <p>
@@ -235,7 +235,7 @@ export default function TechDetail() {
                     <p><strong>● 運用監視体制:</strong> LINEへの図鑑送信に加え、Slack APIでプレイ状況をリアルタイム監視。公共展示におけるシステムの安定稼働を技術面で支えています。</p>
                    </div>
                 </DetailCard>
-                <DetailCard title="AI Integration" color="border-purple-500" isCompact>
+                <DetailCard title="AI-Integration" color="border-purple-500" isCompact>
                   <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">OpenAI / GPT-4o</span>
                   <p className="text-base leading-relaxed">gpt-4-vision-previewを活用し、キャプチャ画像から名前や属性を決定。「なぜその判断に至ったのか」を論理的に言語化するプロンプト設計を行い、AIの思考過程を「学び」へ変えています。</p>
                 </DetailCard>
@@ -256,16 +256,16 @@ export default function TechDetail() {
                   <p className="text-lg leading-9 text-slate-600">　実装当初、筐体の珍しさから多くの人が立ち止まりましたが、最後まで遊んでくれる人はごくわずかでした。私たちはその原因を感覚で判断するのではなく、実際にプレイしたユーザへのヒアリングやアンケート、プレイログの分析を通じて丁寧に捉え直しました。その結果、「体験時間が長すぎること」や「初見では操作やルールが分かりにくいこと」が、離脱の主な要因であると分かりました。そこで、アニメーションによる導線設計やUIの簡略化、AIレスポンスの高速化など、体験の負荷を一つひとつ取り除く改善を繰り返しました。その結果、体験時間を約5分に収めながら離脱を抑えることができ、最終的にはユーザ満足度90%を超える評価につながりました。</p>
                 </div>
                 <div className="w-16 h-16 bg-red-500 rounded-full border-8 border-white shadow-xl flex items-center justify-center text-white font-black z-10">01</div>
-                <div className="flex-1">
-                  <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
+                <div className="flex-1 rotate-2">
+                  <motion.div whileHover={{ scale: 1.05, rotate: -2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-red-50">
                     <Image src="/images/ux_improvement_flow1.png" alt="UX Analysis" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>
               </div>
 
               <div className="flex flex-col lg:flex-row gap-16 items-center relative">
-                <div className="flex-1 order-3 lg:order-1">
-                  <motion.div whileHover={{ scale: 1.05, rotate: -2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-blue-50">
+                <div className="flex-1 order-3 lg:order-1 rotate-358">
+                  <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="bg-white p-6 rounded-[60px] shadow-2xl border-2 border-blue-50">
                     <Image src="/images/event3.png" alt="Fieldwork" width={450} height={300} className="rounded-3xl" />
                   </motion.div>
                 </div>

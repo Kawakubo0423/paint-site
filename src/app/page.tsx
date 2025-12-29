@@ -14,7 +14,8 @@ const gameModeDetails = [
     id: "duo",
     title: "2人対戦 (Duo Battle)",
     subtitle: "究極の心理戦",
-    emoji: "⚔️",
+    //emoji: "⚔️",
+    icon: "/images/duo4.png",
     color: "text-red-500",
     bg: "bg-red-50",
     description: "pAIntの基本モード。友達や家族と、お互いが描いたイキモノで真剣勝負！相手のタイプを予想し、読み勝った時の快感は格別です。対戦相手がいるからこそ生まれる熱狂を楽しもう。"
@@ -23,7 +24,8 @@ const gameModeDetails = [
     id: "solo",
     title: "1人対戦 (Solo Battle)",
     subtitle: "過去の強敵に挑む",
-    emoji: "🤖",
+    icon: "/images/soro.png",
+    //emoji: "🤖",
     color: "text-blue-500",
     bg: "bg-blue-50",
     description: "一人でもCPUと対戦が可能！CPUが使うのは「過去に他のユーザが描いたイキモノ」です。ランダムに選ばれる強敵たちと戦うことで、自分にはなかった新しい描き方やAIの判断基準を学ぶことができます。"
@@ -32,7 +34,8 @@ const gameModeDetails = [
     id: "quick",
     title: "お絵描きのみ (Quick)",
     subtitle: "短い時間でも大満足",
-    emoji: "🎨",
+    icon: "/images/quick1.png",
+    //emoji: "🎨",
     color: "text-yellow-600",
     bg: "bg-yellow-50",
     description: "「バトルをする時間がない...」という人のためのスピード体験モード。描いた後にAIが即座に分析し、図鑑を生成します。AIの分析待ち時間は、過去のユーザが描いた図鑑一覧を眺めて楽しむことができる、無駄のない設計です。"
@@ -536,7 +539,7 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="bg-blue-500 text-white p-1 rounded-full text-xs">●</span>
-                  <span className="font-bold text-slate-700">見た目から「陸・海・空」属性を付与</span>
+                  <span className="font-bold text-slate-700">見た目から「陸・海・空」タイプを付与</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="bg-yellow-500 text-white p-1 rounded-full text-xs">●</span>
@@ -562,10 +565,10 @@ export default function Home() {
 
     {/* --- 3. あそびかた (セクション全体を枠で囲い、余白を調整) --- */}
     <section id="howtoplay" className="py-24 px-4 bg-slate-50">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         
         {/* --- 追加：セクションを強調する外枠パネル --- */}
-        <div className="bg-white border-4 border-slate-200 rounded-[60px] p-8 md:p-20 shadow-xl relative overflow-hidden">
+        <div className="bg-white border-4 border-slate-200 rounded-[60px] p-8 md:px-10 shadow-xl relative overflow-hidden">
           
           {/* 背景の装飾（任意） */}
           <div className="absolute top-0 left-0 w-2 h-full bg-blue-500/10"></div>
@@ -575,7 +578,7 @@ export default function Home() {
           </h2>
 
           {/* 既存のSTEPカードグリッド */}
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
+          <div className="grid md:grid-cols-3 gap-5 mb-20">
             {howToPlayDetails.map((step) => (
               <motion.div 
                 key={step.id}
@@ -590,8 +593,8 @@ export default function Home() {
                 </div>
                 <h3 className={`text-xl font-bold ${step.color} mb-2`}>{step.title}</h3>
                 <p className="text-slate-600 text-sm mb-6 flex-grow">
-                  {step.id === 1 && "制限時間内に好きな生き物を描こう。AIがどんな生き物か見てくれるぞ。"}
-                  {step.id === 2 && "「陸(グー)」「海(パー)」「空(チョキ)」の3すくみバトル！属性を見極めろ。"}
+                  {step.id === 1 && "制限時間内に好きなイキモノを描こう。AIがどんなイキモノか見てくれるぞ。"}
+                  {step.id === 2 && "「陸(グー)」「海(パー)」「空(チョキ)」の3すくみバトル！タイプを見極めろ。"}
                   {step.id === 3 && "バトル後はQRコードで図鑑をゲット。LINEでいつでも見返せる！"}
                 </p>
                 <button 
@@ -621,7 +624,15 @@ export default function Home() {
                     className={`${mode.bg} p-10 rounded-[40px] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center group cursor-pointer transition-all hover:shadow-xl`}
                     onClick={() => setSelectedMode(mode.id)}
                   >
-                    <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">{mode.emoji}</div>
+                    {/* --- 絵文字から画像アイコンに変更 --- */}
+                    <div className="relative w-30 h-30 mb-4 group-hover:scale-110 transition-transform">
+                      <Image 
+                        src={mode.icon} 
+                        alt={mode.title} 
+                        fill 
+                        className="object-contain" 
+                      />
+                    </div>
                     <h3 className={`text-2xl font-black mb-2 ${mode.color}`}>{mode.title}</h3>
                     <p className="text-slate-400 font-bold mb-6">{mode.subtitle}</p>
                     <button className={`mt-auto px-6 py-2 rounded-full border-2 ${mode.color.replace('text-', 'border-')} ${mode.color} font-black text-sm group-hover:bg-white transition-colors`}>
@@ -639,7 +650,7 @@ export default function Home() {
               <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-2 italic uppercase tracking-tighter">
                 Gameplay Showcase
               </h3>
-              <p className="text-slate-400 font-bold text-xs tracking-widest uppercase">
+              <p className="text-slate-400 font-bold text-xs tracking-widest">
                 3つの視点から見る「pAInt」の世界
               </p>
             </div>
@@ -684,16 +695,16 @@ export default function Home() {
                   className="flex-1 bg-white p-6 rounded-[35px] shadow-lg border-2 border-slate-50 flex flex-col justify-between group cursor-pointer hover:border-blue-500 transition-all"
                 >
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">📺</div>
+                    <div className="w-12 h-5 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">📺</div>
                     <span className="text-[10px] font-black text-slate-300 tracking-tighter uppercase">5min full ver.</span>
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-800 text-lg leading-tight mb-1">画面録画</h4>
+                    <h4 className="font-black text-slate-800 text-lg leading-tight mb-1">フル映像</h4>
                     <p className="text-slate-400 text-xs font-bold leading-relaxed">
                       UIデザインと演出の<br/>ディテールを確認する
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     Watch Video <span className="text-lg">→</span>
                   </div>
                 </motion.div>
@@ -705,7 +716,7 @@ export default function Home() {
                   className="flex-1 bg-white p-6 rounded-[35px] shadow-lg border-2 border-slate-50 flex flex-col justify-between group cursor-pointer hover:border-blue-500 transition-all"
                 >
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">👤</div>
+                    <div className="w-12 h-5 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">👤</div>
                     <span className="text-[10px] font-black text-slate-300 tracking-tighter uppercase">Real Reaction</span>
                   </div>
                   <div>
@@ -714,7 +725,7 @@ export default function Home() {
                       実際の筐体体験と<br/>熱狂を感じる
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     Watch Video <span className="text-lg">→</span>
                   </div>
                 </motion.div>
@@ -788,13 +799,13 @@ export default function Home() {
                     onClick={() => setFullPlayTab("screen")}
                     className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${fullPlayTab === "screen" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                   >
-                    画面録画
+                    プレイ映像（フル）
                   </button>
                   <button 
                     onClick={() => setFullPlayTab("external")}
                     className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${fullPlayTab === "external" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                   >
-                    プレイの様子 (外撮り)
+                    実際のプレイの様子
                   </button>
                 </div>
                 <button onClick={() => setIsFullPlayOpen(false)} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-white text-sm font-bold transition-colors">閉じる ✕</button>
@@ -803,9 +814,9 @@ export default function Home() {
               {/* ビデオエリア */}
               <div className="flex-grow bg-black flex items-center justify-center overflow-hidden p-4">
                 {fullPlayTab === "screen" ? (
-                  <video key="screen-video" src="/videos/full_play_screen.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+                  <video key="screen-video" src="/videos/pv_15s.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
                 ) : (
-                  <video key="external-video" src="/videos/full_play_external.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+                  <video key="external-video" src="/videos/pv_15s.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
                 )}
               </div>
               
@@ -890,7 +901,14 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden">
               <button onClick={() => setSelectedMode(null)} className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors z-10">✕</button>
               <div className="p-10 md:p-16 text-center">
-                <div className="text-7xl mb-8">{gameModeDetails.find(m => m.id === selectedMode)?.emoji}</div>
+                <div className="relative w-32 h-32 mx-auto mb-8">
+                  <Image 
+                    src={gameModeDetails.find(m => m.id === selectedMode)?.icon || ""} 
+                    alt="Game Mode Icon"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
                 <h3 className={`text-3xl md:text-4xl font-black mb-4 ${gameModeDetails.find(m => m.id === selectedMode)?.color}`}>
                   {gameModeDetails.find(m => m.id === selectedMode)?.title}
                 </h3>
@@ -1070,7 +1088,7 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center justify-center gap-2">
             <span className="text-yellow-500">🎨</span> みんなの図鑑
           </h2>
-          <p className="text-slate-500 mt-2">これまでに生まれたユニークなイキモノたち</p>
+          <p className="text-slate-400 font-bold mt-3">これまでに生まれたユニークなイキモノたち</p>
         </div>
 
         {/* 修正ポイント：
@@ -1198,7 +1216,7 @@ export default function Home() {
 
           {/* 【追加】活動写真ギャラリー */}
           <div>
-            <h3 className="text-center text-xl font-bold mb-8 flex items-center justify-center gap-2">
+            <h3 className="text-center text-3xl font-bold mb-5 flex items-center justify-center gap-2">
               <span className="text-blue-400">📷</span> 活動の様子
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
@@ -1245,7 +1263,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter">開発レポート</h2>
-            <p className="text-slate-400 mb-16 font-bold tracking-[0.3em] uppercase">TECHNICAL STORY</p>
+            <p className="text-slate-400 mb-16 font-bold tracking-[0.3em] uppercase">Development Story</p>
           </motion.div>
 
                     {/* 開発者ページへの強力な誘導リンク */}
@@ -1274,10 +1292,12 @@ export default function Home() {
               whileHover={{ y: -5 }}
               className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-blue-500 transition-all duration-300 backdrop-blur-sm"
             >
-              <div className="text-3xl mb-6 bg-blue-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">⚙️</div>
+              <div className="text-3xl mb-6 bg-blue-500/20 w-28 h-20 flex items-center justify-center rounded-2xl shadow-inner overflow-hidden p-3">
+                <Image src="/icons/tech-hardware.png" alt="Hardware" width={100} height={100} />
+              </div>
               <h4 className="text-xl font-black mb-3 text-blue-400 italic">Hardware</h4>
               <p className="text-slate-400 text-sm leading-7 font-bold">
-                木材の筐体設計から3Dプリンタによる専用コントローラー製作、配線まで。手触りと没入感を追求した完全自作のアーケード。
+                木製の筐体から3Dプリンタによる専用コントローラーの制作まで。手触りと没入感を追求した完全自作のアーケード。
               </p>
             </motion.div>
 
@@ -1286,10 +1306,12 @@ export default function Home() {
               whileHover={{ y: -5 }}
               className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-green-500 transition-all duration-300 backdrop-blur-sm"
             >
-              <div className="text-3xl mb-6 bg-green-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🎮</div>
-              <h4 className="text-xl font-black mb-3 text-green-400 italic">Frontend</h4>
+              <div className="text-3xl mb-6 bg-green-500/20 w-28 h-20 flex items-center justify-center rounded-2xl shadow-inner overflow-hidden p-3">
+                <Image src="/icons/tech-frontend.png" alt="Frontend" width={100} height={100} />
+              </div>
+              <h4 className="text-xl font-black mb-3 text-green-400 italic">Front-end</h4>
               <p className="text-slate-400 text-sm leading-7 font-bold">
-                Unity (C#) を使用。お絵描き、バトル演出、AI通信を統合する複雑なステート管理を行い、5分間の濃密なUXを構築。
+                Unity (C#) を使用。お絵描き、バトル演出、AI通信を統合する複雑なステート管理を行い、濃密なUI/UXを構築。
               </p>
             </motion.div>
 
@@ -1298,10 +1320,12 @@ export default function Home() {
               whileHover={{ y: -5 }}
               className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-blue-400 transition-all duration-300 backdrop-blur-sm"
             >
-              <div className="text-3xl mb-6 bg-blue-400/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🌐</div>
-              <h4 className="text-xl font-black mb-3 text-blue-300 italic">Backend</h4>
+              <div className="text-3xl mb-6 bg-blue-400/20 w-28 h-20 flex items-center justify-center rounded-2xl shadow-inner overflow-hidden p-4">
+                <Image src="/icons/tech-backend.png" alt="Backend" width={100} height={100} />
+              </div>
+              <h4 className="text-xl font-black mb-3 text-blue-300 italic">Back-end</h4>
               <p className="text-slate-400 text-sm leading-7 font-bold">
-                GASを核とした設計。Google Drive/Sheets/LINE/Slackを統合し、図鑑生成から運用監視までを行う自律型パイプライン。
+                GASを核とした設計。Google Drive/Sheets/LINE/Slackを統合し、図鑑生成から運用監視までを行うpAIntの柱。
               </p>
             </motion.div>
 
@@ -1310,10 +1334,12 @@ export default function Home() {
               whileHover={{ y: -5 }}
               className="bg-slate-800/50 p-8 rounded-[32px] border-2 border-slate-700 hover:border-purple-500 transition-all duration-300 backdrop-blur-sm"
             >
-              <div className="text-3xl mb-6 bg-purple-500/20 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">🧠</div>
-              <h4 className="text-xl font-black mb-3 text-purple-400 italic">AI Integration</h4>
+             <div className="text-3xl mb-6 bg-purple-500/20 w-28 h-20 flex items-center justify-center rounded-2xl shadow-inner overflow-hidden p-5">
+                <Image src="/icons/tech-ai1.png" alt="AI Integration" width={100} height={100} />
+              </div>
+              <h4 className="text-xl font-black mb-3 text-purple-400 italic">AI-Integration</h4>
               <p className="text-slate-400 text-sm leading-7 font-bold">
-                GPT-4o Visionを活用。描画画像から属性や名前、判断理由を論理的に抽出する高度なプロンプトエンジニアリングを実装。
+                GPT-4o Visionを活用。画像から名前やタイプ、判断理由を論理的に抽出する高度なプロンプトエンジニアリングを実装。
               </p>
             </motion.div>
           </div>
