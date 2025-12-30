@@ -95,6 +95,9 @@ export default function Home() {
   const [showIntro, setShowIntro] = useState(true); // イントロ全体の表示フラグ
   const [isZooming, setIsZooming] = useState(false); // ズーム開始のトリガー
 
+  // メインコンテンツを表示する準備ができたかのフラグ
+  const [shouldRenderContent, setShouldRenderContent] = useState(false);
+
   // 【追加】フルプレイ動画モーダル用のState
   const [isFullPlayOpen, setIsFullPlayOpen] = useState(false);
   const [fullPlayTab, setFullPlayTab] = useState<"screen" | "external">("screen");
@@ -111,6 +114,8 @@ export default function Home() {
   const handleStart = () => {
     if (!isZooming) {
       setIsZooming(true);
+      // クリックから少し遅れてメインコンテンツの準備を始める（カクつき防止）
+      setTimeout(() => setShouldRenderContent(true), 1000);
     }
   };
 
@@ -203,229 +208,218 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-slate-50 selection:bg-yellow-200 selection:text-slate-900">
-{/* --- 【修正版】没入型イントロオーバーレイ（確実に動く最適化） --- */}
-<AnimatePresence>
-  {showIntro && (
-    <motion.div
-      key="intro-overlay"
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-white overflow-hidden"
-      style={{ backfaceVisibility: "hidden" }}
-    >
-      {/* 1. 背景の浮遊粒子：位置を style(left/top) で固定し、x/y で揺らす */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[
-          { color: "bg-red-500", size: "w-72 h-72", x: "15%", y: "20%", d: 12, move: 40 },
-          { color: "bg-blue-500", size: "w-96 h-96", x: "75%", y: "15%", d: 15, move: -50 },
-          { color: "bg-yellow-500", size: "w-80 h-80", x: "25%", y: "65%", d: 18, move: 30 },
-          { color: "bg-red-400", size: "w-56 h-56", x: "85%", y: "75%", d: 10, move: -20 },
-          { color: "bg-blue-400", size: "w-[400px] h-[400px]", x: "45%", y: "85%", d: 20, move: 60 },
-          { color: "bg-yellow-400", size: "w-64 h-64", x: "55%", y: "10%", d: 14, move: -40 },
-        ].map((p, i) => (
+    {/* --- 【修正版】没入型イントロオーバーレイ（確実に動く最適化） --- */}
+    <AnimatePresence>
+      {showIntro && (
+        <motion.div
+          key="intro-overlay"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-white overflow-hidden"
+          style={{ backfaceVisibility: "hidden", transform: "translateZ(0)" }}
+        >
+          {/* 1. 背景の浮遊粒子：位置を style(left/top) で固定し、x/y で揺らす */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[
+                { color: "bg-red-500", size: "w-72 h-72", x: "15%", y: "20%", d: 12, move: 40 },
+                { color: "bg-blue-500", size: "w-96 h-96", x: "75%", y: "15%", d: 15, move: -50 },
+                { color: "bg-yellow-500", size: "w-80 h-80", x: "25%", y: "65%", d: 18, move: 30 },
+                { color: "bg-red-400", size: "w-56 h-56", x: "85%", y: "75%", d: 10, move: -20 },
+                { color: "bg-blue-400", size: "w-[400px] h-[400px]", x: "45%", y: "85%", d: 20, move: 60 },
+                { color: "bg-yellow-400", size: "w-64 h-64", x: "55%", y: "10%", d: 14, move: -40 },
+              ].map((p, i) => (
+                <motion.div
+                  key={i}
+                  style={{ 
+                    left: p.x, 
+                    top: p.y,
+                    willChange: "transform, opacity", // 変形と透明度の準備をさせる
+                    transform: 'translateZ(0)',       // GPUで処理させる
+                  }}
+                  className={`absolute ${p.color} ${p.size} rounded-full blur-[60px] opacity-30`} // blurを少し下げて負荷軽減
+                  animate={isZooming ? {
+                    x: "50vw", // 中央へ
+                    y: "40vh",
+                    scale: 0,
+                    opacity: 0,
+                    transition: { duration: 1.2, ease: "circIn" }
+                  } : {
+                    x: [0, p.move, 0],
+                    y: [0, -p.move, 0],
+                    transition: { duration: p.d, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                />
+              ))}
+            </div>
+
+          {/* 1. 背後のエナジーオーラ（中略：以前と同じ） */}
+          {isZooming && (
+            <div className="absolute inset-0 z-10 pointer-events-none">
+              <motion.div
+                initial={{ scale: 1, opacity: 0 }}
+                animate={{ scale: 2, opacity: [0, 0.7, 0] }}
+                transition={{ duration: 1.8, ease: "circIn" }}
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ willChange: "transform, opacity" }}
+              >
+                <div 
+                  className="w-[80vw] h-[80vw] rounded-full blur-[80px]"
+                  style={{
+                    background: 'radial-gradient(circle, #ef4444 0%, #3b82f6 40%, #eab308 70%, transparent 100%)',
+                    transform: 'translateZ(0)'
+                  }}
+                />
+              </motion.div>
+            </div>
+          )}
+
+          {/* 2. 筐体本体（中略：以前と同じ） */}
           <motion.div
-            key={i}
-            // style で初期位置を画面全体に散らす
-            style={{ left: p.x, top: p.y }}
-            className={`absolute ${p.color} ${p.size} rounded-full blur-[80px]`}
-            initial={{ opacity: 0, scale: 1 }}
+            initial={{ scale: 1.0, opacity: 0, y: -40 }}
             animate={isZooming ? {
-              // ズーム時は画面中央付近へ吸い込まれる
-              left: "50%",
-              top: "38%",
-              scale: 0,
-              opacity: 0,
-              transition: { duration: 1.5, ease: "circIn" }
-            } : {
-              // 待機時：ホワホワと移動・明滅
-              opacity: [0.3, 0.6, 0.3],
-              x: [0, p.move, 0], // move値を使って個別に揺らす
-              y: [0, -p.move, 0],
-              scale: [1, 1.1, 1],
+              scale: 7, 
+              opacity: [1, 1, 0],
+              y: 0,
               transition: { 
-                duration: p.d, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
+                  duration: 2.0, 
+                  ease: [0.2, 0.4, 0.6, 1], // このイージングと速度に同期させます
+                  opacity: { times: [0, 0.8, 1], duration: 2.0 } 
               }
+            } : { 
+              scale: 1, opacity: 1, y: 0,
+              transition: { duration: 0.8 }
             }}
-          />
-        ))}
-      </div>
-
-      {/* 1. 背後のエナジーオーラ（中略：以前と同じ） */}
-      {isZooming && (
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          <motion.div
-            initial={{ scale: 1, opacity: 0 }}
-            animate={{ scale: 2, opacity: [0, 0.7, 0] }}
-            transition={{ duration: 1.8, ease: "circIn" }}
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ willChange: "transform, opacity" }}
+            onAnimationComplete={() => isZooming && handleIntroComplete()}
+            style={{ 
+              originX: 0.5,
+              originY: 0.37,
+              zIndex: 20,
+              willChange: "transform",
+              transform: 'translateZ(0)',
+              WebkitBackfaceVisibility: "hidden"
+            }}
+            className="relative w-[400px] h-[690px] md:w-[800px] md:h-[1200px]"
+            onClick={handleStart}
           >
-            <div 
-              className="w-[80vw] h-[80vw] rounded-full blur-[80px]"
-              style={{
-                background: 'radial-gradient(circle, #ef4444 0%, #3b82f6 40%, #eab308 70%, transparent 100%)',
-                transform: 'translateZ(0)'
-              }}
+            {/* 筐体画像 */}
+            <Image 
+              src="/images/arcade-front-paint1.png" 
+              alt="Arcade Machine Intro" 
+              fill 
+              className="object-contain"
+              priority
             />
+
+            {/* --- 【修正】完全に同期して回転・拡大する渦 --- */}
+            <AnimatePresence>
+              {isZooming && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 2.0 }} // 出現時のみ少しフェード
+                  className="absolute overflow-hidden"
+                  style={{
+                    top: "23%",    // モニターの初期位置
+                    left: "25%",   
+                    width: "50%",  
+                    aspectRatio: "1 / 1",
+                    borderRadius: "50px",
+                    zIndex: 10,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {/* 回転アニメーション専用のレイヤー */}
+                  <motion.div
+                    animate={{ rotate: 360 * 0.5 }} // 3回転させる
+                    transition={{ 
+                      duration: 2.0,             // 筐体のズーム時間(2.0)と一致
+                      ease: [0.1, 0.1, 0.4, 1.0],  // 筐体のズームイージングと完全に一致
+                    }}
+                    className="relative w-full h-full scale-[0.6]" // 枠より少し大きくして端を見せない
+                  >
+                    <Image
+                      src="/images/vortex1.png" 
+                      alt="吸い込まれる渦"
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+ 
+
+          {/* PRESS START テキスト（筐体の画面内に配置） */}
+            {!isZooming && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 flex flex-col items-center pointer-events-none"
+              >
+                <motion.div
+                  animate={{ opacity: [1, 0] }} 
+                  transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                  style={{ top: "35%" }}
+                  className="absolute bg-black/80 px-6 py-3 rounded-lg border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] flex flex-col items-center"
+                >
+                  <p className="text-white font-black tracking-[0.3em] text-sm md:text-xl italic leading-none">
+                    ー PRESS START ー
+                  </p>
+                  <p className="text-slate-400 font-bold text-[8px] md:text-[10px] mt-2 tracking-widest uppercase">
+                    Click Screen
+                  </p>
+                </motion.div>
+              </motion.div>
+            )}
           </motion.div>
-        </div>
-      )}
 
-      {/* 2. 筐体本体（中略：以前と同じ） */}
-      <motion.div
-        initial={{ scale: 1.0, opacity: 0, y: -40 }}
-        animate={isZooming ? {
-          scale: 7, 
-          opacity: [1, 1, 0],
-          y: 0,
-          transition: { 
-              duration: 2.0, 
-              ease: [0.2, 0.4, 0.6, 1],
-              opacity: { times: [0, 0.8, 1], duration: 2.0 } 
-          }
-        } : { 
-          scale: 1, opacity: 1, y: 0,
-          transition: { duration: 0.8 }
-        }}
-        onAnimationComplete={() => isZooming && handleIntroComplete()}
-        style={{ 
-          originX: 0.5,
-          originY: 0.37,
-          zIndex: 20,
-          willChange: "transform, opacity",
-          transform: 'translateZ(0)'
-        }}
-        className="relative w-[400px] h-[690px] md:w-[800px] md:h-[1200px]"
-        onClick={handleStart}
-      >
-        <Image 
-          src="/images/arcade-front-paint1.png" 
-          alt="Arcade Machine Intro" 
-          fill 
-          className="object-contain"
-          priority
-        />
+          {/* --- 3. 最前面：放射状の光（3層レイヤー・開始方向をずらして密度アップ） --- */}
+          {isZooming && (
+            <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
 
-{/* PRESS START テキスト（筐体の画面内に配置） */}
-        {!isZooming && (
-          <motion.div 
+
+              {/* 中央コア */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: [0, 2, 8], opacity: [0, 1, 0] }}
+                transition={{ duration: 1.4, ease: "circIn" }}
+                className="absolute w-40 h-40 bg-white rounded-full blur-[30px]"
+              />
+            </div>
+            )}
+
+          {/* 4. ホワイトアウト */}
+          <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 flex flex-col items-center pointer-events-none"
-          >
-            <motion.div
-              animate={{ opacity: [1, 0] }} 
-              transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-              style={{ top: "35%" }}
-              className="absolute bg-black/80 px-6 py-3 rounded-lg border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] flex flex-col items-center"
-            >
-              <p className="text-white font-black tracking-[0.3em] text-sm md:text-xl italic leading-none">
-                ー PRESS START ー
-              </p>
-              <p className="text-slate-400 font-bold text-[8px] md:text-[10px] mt-2 tracking-widest uppercase">
-                Click Screen
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </motion.div>
-
-      {/* --- 3. 最前面：放射状の光（3層レイヤー・開始方向をずらして密度アップ） --- */}
-      {isZooming && (
-        <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
-          {/* レイヤーA: 角度45度から高速回転（青・白） */}
-          <motion.div
-            initial={{ rotate: 45, scale: 0, opacity: 0 }}
-            animate={{ rotate: 405, scale: 4, opacity: [0, 1, 0] }}
-            transition={{ duration: 1.5, ease: "circIn" }}
-            style={{ willChange: "transform", transform: 'translateZ(0)' }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <div 
-              className="w-[150vmax] h-[150vmax]" 
-              style={{
-                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, #3b82f6 2deg, transparent 5deg, white 10deg, transparent 15deg)',
-                maskImage: 'radial-gradient(circle, black 30%, transparent 70%)',
-                filter: 'blur(1px)'
-              }}
-            />
-          </motion.div>
-
-          {/* レイヤーB: 角度-110度から逆回転（白・透過） */}
-          <motion.div
-            initial={{ rotate: -110, scale: 0, opacity: 0 }}
-            animate={{ rotate: -270, scale: 5, opacity: [0, 0.8, 0] }}
-            transition={{ duration: 1.3, ease: "circIn", delay: 0.1 }}
-            style={{ willChange: "transform", transform: 'translateZ(0)' }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <div 
-              className="w-[150vmax] h-[150vmax]" 
-              style={{
-                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.4) 15deg, transparent 30deg)',
-                maskImage: 'radial-gradient(circle, black 20%, transparent 60%)',
-                filter: 'blur(3px)'
-              }}
-            />
-          </motion.div>
-
-          {/* 【新設】レイヤーC: 角度200度から低速回転（淡い光・広範囲） */}
-          <motion.div
-            initial={{ rotate: 250, scale: 0, opacity: 0 }}
-            animate={{ rotate: 560, scale: 6, opacity: [0, 0.6, 0] }}
-            transition={{ duration: 1.7, ease: "circIn", delay: 0.2 }}
-            style={{ willChange: "transform", transform: 'translateZ(0)' }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <div 
-              className="w-[150vmax] h-[150vmax]" 
-              style={{
-                background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.2) 20deg, transparent 40deg)',
-                maskImage: 'radial-gradient(circle, black 10%, transparent 50%)',
-                filter: 'blur(6px)'
-              }}
-            />
-          </motion.div>
-
-          {/* 中央コア */}
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: [0, 2, 8], opacity: [0, 1, 0] }}
-            transition={{ duration: 1.4, ease: "circIn" }}
-            className="absolute w-40 h-40 bg-white rounded-full blur-[30px]"
+            animate={isZooming ? { 
+              opacity: [0, 0, 1, 0],
+              transition: { times: [0, 0.7, 0.85, 1], duration: 2.5 } 
+            } : { opacity: 0 }}
+            className="absolute inset-0 bg-white z-40 pointer-events-none"
           />
-        </div>
+        </motion.div>
       )}
-
-      {/* 4. ホワイトアウト */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={isZooming ? { 
-          opacity: [0, 0, 1, 0],
-          transition: { times: [0, 0.7, 0.85, 1], duration: 2.0 } 
-        } : { opacity: 0 }}
-        className="absolute inset-0 bg-white z-40 pointer-events-none"
-      />
-    </motion.div>
-  )}
-</AnimatePresence>
+    </AnimatePresence>
 
 {/* --- 2. メインコンテンツ：飛び出してくる演出（爆発エフェクト） --- */}
+
       <motion.div
-        initial={{ opacity: 0, scale: 1.3, filter: "blur(20px)" }}
-        animate={!showIntro ? { 
-          opacity: 1, 
-          scale: 1, 
-          filter: "blur(0px)",
-          transition: { 
-            duration: 1.2, 
-            ease: [0.22, 1, 0.36, 1], // 強力な減速で「着地」感を出す
-            delay: 0.1
-          } 
-        } : {}}
-        className="relative"
+          // イントロが完全に終わる（showIntroがfalseになる）までは非表示にしておく
+          initial={{ opacity: 0, scale: 1.3, filter: "blur(20px)" }}
+          animate={!showIntro ? { 
+            opacity: 1, 
+            scale: 1, 
+            filter: "blur(0px)",
+            transition: { 
+              duration: 1.2, 
+              ease: [0.22, 1, 0.36, 1],
+              delay: 0.1
+            } 
+          } : { opacity: 0 }}
+          className="relative"
       >
         {/* コンテンツが表示される瞬間の残光演出 */}
         {!showIntro && (
@@ -1248,7 +1242,7 @@ export default function Home() {
         </div>
       </section>
 
-{/* --- 5. 開発レポート (一新：4つの技術カードと強調された誘導) --- */}
+    {/* --- 5. 開発レポート (一新：4つの技術カードと強調された誘導) --- */}
       <section id="tech" className="py-32 px-4 bg-slate-900 text-white border-t border-slate-800 relative overflow-hidden">
         {/* 背景の装飾：エンジニアリングを感じさせる回路のようなライン */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
