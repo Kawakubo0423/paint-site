@@ -215,8 +215,8 @@ export default function TechDetail() {
             <div className="grid lg:grid-cols-12 gap-8 items-stretch">
               <div className="lg:col-span-7 bg-white/60 backdrop-blur-xl p-8 rounded-[60px] shadow-2xl border-4 border-white relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400" />
-                <p className="text-[10px] font-black text-slate-300 mt-4 mb-8 uppercase tracking-[0.3em] text-center">Full System Architecture</p>
-                <div className="flex-grow relative min-h-[500px] flex items-center justify-center">
+                <p className="text-[10px] font-black text-slate-300 mt-4 mb-0 uppercase tracking-[0.3em] text-center">Full System Architecture</p>
+                <div className="flex-grow relative min-h-[700px] flex items-center justify-center">
                   <Image src="/images/system_diagram.png" alt="Architecture" fill className="object-contain p-4" />
                 </div>
               </div>

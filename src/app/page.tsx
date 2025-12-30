@@ -336,7 +336,7 @@ export default function Home() {
                       duration: 2.0,             // 筐体のズーム時間(2.0)と一致
                       ease: [0.1, 0.1, 0.4, 1.0],  // 筐体のズームイージングと完全に一致
                     }}
-                    className="relative w-full h-full scale-[0.6]" // 枠より少し大きくして端を見せない
+                    className="relative w-full h-full scale-[0.7]" // 枠より少し大きくして端を見せない
                   >
                     <Image
                       src="/images/vortex1.png" 
@@ -1163,7 +1163,7 @@ export default function Home() {
               <div className="bg-slate-700/50 p-6 rounded-2xl border border-slate-600 backdrop-blur-sm">
                 <h3 className="text-slate-300 text-sm font-bold mb-2">イベント出展</h3>
                 <p className="text-5xl font-black text-blue-400">
-                  {inView ? <CountUp end={5} duration={2.5} suffix="回以上" /> : "0回以上"}
+                  {inView ? <CountUp end={5} duration={2.5} suffix="回" /> : "0回"}
                 </p>
               </div>
               <div className="bg-slate-700/50 p-6 rounded-2xl border border-slate-600 backdrop-blur-sm col-span-2">
