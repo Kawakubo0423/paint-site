@@ -436,7 +436,7 @@ export default function Home() {
         style={{ opacity: headerOpacity, y: headerY }}
         className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm py-3 px-6 flex justify-between items-center"
       >
-        <div className="relative w-24 h-10">
+        <div className="relative w-24 h-9 mb-1">
           <Image src="/images/logo1.jpg" alt="pAInt Logo" fill className="object-contain scale-[1.7] origin-left" />
         </div>
         <nav className="hidden md:flex gap-6 text-sm font-bold text-slate-600">
@@ -650,14 +650,17 @@ export default function Home() {
             </div>
 
             {/* メインレイアウト：左に大型PV、右にフルプレイ動画へのセレクター */}
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="grid lg:grid-cols-3 gap-6 mb-4">
               
               {/* 1. プロジェクトPV (メイン) */}
               <motion.div
                 whileHover={{ y: -5 }}
                 onClick={() => setIsPvOpen(true)}
                 className="lg:col-span-2 relative group cursor-pointer bg-slate-900 rounded-[40px] overflow-hidden shadow-2xl border-[10px] border-white ring-1 ring-slate-200"
-                style={{ aspectRatio: pvAspectRatio }}
+                // ↓↓↓ 【修正】ここを固定の比率に変更します ↓↓↓
+                // 元のコード: style={{ aspectRatio: pvAspectRatio }}
+                // 修正後の例（少し縦長）:
+                style={{ aspectRatio: "16 / 10" }}
               >
                 <video
                   src="/videos/pv_15s.mp4"
@@ -680,7 +683,7 @@ export default function Home() {
               </motion.div>
 
               {/* 2. フルプレイ動画の選択エリア (縦に2つ並べる) */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 
                 {/* 画面録画カード */}
                 <motion.div
@@ -689,16 +692,20 @@ export default function Home() {
                   className="flex-1 bg-white p-6 rounded-[35px] shadow-lg border-2 border-slate-50 flex flex-col justify-between group cursor-pointer hover:border-blue-500 transition-all"
                 >
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-5 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">📺</div>
+                    <div className="w-20 h-15 bg-blue-50 rounded-2xl flex items-center justify-center p-1.5 group-hover:bg-blue-500 transition-colors">
+                      <div className="relative w-full h-full">
+                        <Image src="/icons/video-icon.png" alt="Video Icon" fill className="object-contain transition-transform group-hover:scale-110" />
+                      </div>
+                    </div>
                     <span className="text-[10px] font-black text-slate-300 tracking-tighter uppercase">5min full ver.</span>
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-800 text-lg leading-tight mb-1">フル映像</h4>
+                    <h4 className="font-black text-slate-800 text-lg leading-tight mt-3 mb-1">フル映像</h4>
                     <p className="text-slate-400 text-xs font-bold leading-relaxed">
-                      UIデザインと演出の<br/>ディテールを確認する
+                      一連のプレイ映像を確認する
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-0 opacity-0 group-hover:opacity-100 transition-opacity">
                     Watch Video <span className="text-lg">→</span>
                   </div>
                 </motion.div>
@@ -710,16 +717,20 @@ export default function Home() {
                   className="flex-1 bg-white p-6 rounded-[35px] shadow-lg border-2 border-slate-50 flex flex-col justify-between group cursor-pointer hover:border-blue-500 transition-all"
                 >
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-5 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">👤</div>
+                    <div className="w-20 h-15 bg-blue-50 rounded-2xl flex items-center justify-center p-1.5 group-hover:bg-blue-500 transition-colors">
+                      <div className="relative w-full h-full">
+                        <Image src="/icons/user-icon.png" alt="User Icon" fill className="object-contain transition-transform group-hover:scale-110" />
+                      </div>
+                    </div>
                     <span className="text-[10px] font-black text-slate-300 tracking-tighter uppercase">Real Reaction</span>
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-800 text-lg leading-tight mb-1">プレイの様子</h4>
+                    <h4 className="font-black text-slate-800 text-lg leading-tight mt-3 mb-1">プレイの様子</h4>
                     <p className="text-slate-400 text-xs font-bold leading-relaxed">
-                      実際の筐体体験と<br/>熱狂を感じる
+                      実際の筐体で体験している様子を見る
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest mt-0 opacity-0 group-hover:opacity-100 transition-opacity">
                     Watch Video <span className="text-lg">→</span>
                   </div>
                 </motion.div>
@@ -957,7 +968,7 @@ export default function Home() {
               <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 md:top-1/2 md:left-[-3px] md:-translate-y-1/2 w-8 h-8 bg-white transform rotate-45 z-0 border-l-2 border-t-2 md:border-t-0 md:border-l-2 md:border-b-2 border-slate-200"></div>
               
               <div className="relative z-10">
-                <div className="inline-block bg-slate-900 text-white px-5 py-1.5 rounded-full text-[10px] font-black mb-6 tracking-[0.2em] uppercase">AI Logic Insight</div>
+                <div className="inline-block bg-slate-900 text-white px-5 py-1.5 rounded-full text-[15px] font-black mb-6 tracking-[0.2em] uppercase">バトルのヒミツ</div>
                 <h3 className="text-2xl md:text-4xl font-black text-slate-800 mb-6 flex items-center gap-3 italic leading-tight">
                    AIの思考を読み解くのじゃ！
                 </h3>
