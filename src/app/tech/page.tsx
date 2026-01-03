@@ -223,11 +223,11 @@ export default function TechDetail() {
 
               <div className="lg:col-span-5 flex flex-col gap-6">
                 <DetailCard title="Front-end" color="border-green-500" isCompact>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">Unity / C#</span>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black mb-4 inline-block">Unity / C#</span>
                   <p className="text-base leading-relaxed">お絵描きからバトル、AI連携までをUnity上で統合。ユーザを飽きさせない演出テンポの最適化やアニメーションを徹底し、体験時間を5分以内に凝縮。さらに初めての人でもつまずかない直感的なUI/UXを実現しました。</p>
                 </DetailCard>
                 <DetailCard title="Back-end" color="border-blue-500" isCompact>
-                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">GAS / DRIVE / SHEETS / LINE API/ SLACK API</span>
+                   <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black mb-4 inline-block">GAS / Google Drive / Sheets / LINE API/ Slack API</span>
                    <div className="text-sm space-y-3 pb-10">
                     <p>
                     <strong>● AI連携の自動化:</strong> Unity・Drive・AI・Sheets間のデータ往復をGASで完全制御。AIが生成した属性情報をUnityへ反映しつつ、動的に図鑑画像を自動生成するロジックを構築しました。
@@ -236,7 +236,7 @@ export default function TechDetail() {
                    </div>
                 </DetailCard>
                 <DetailCard title="AI-Integration" color="border-purple-500" isCompact>
-                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">OpenAI / GPT-4o</span>
+                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-black mb-4 inline-block">OpenAI API/ GPT-4o</span>
                   <p className="text-base leading-relaxed">gpt-4-vision-previewを活用し、キャプチャ画像から名前や属性を決定。「なぜその判断に至ったのか」を論理的に言語化するプロンプト設計を行い、AIの思考過程を「学び」へ変えています。</p>
                 </DetailCard>
               </div>
@@ -273,7 +273,7 @@ export default function TechDetail() {
                 <div className="flex-1 order-2 lg:order-3 space-y-6 text-left">
                   <span className="bg-blue-500 text-white px-6 py-2 rounded-full text-xs font-black italic shadow-lg inline-block">CASE 02: チームの熱量</span>
                   <h3 className="text-2xl md:text-5xl font-black text-slate-800 tracking-tighter">「ユーザの笑顔」が火を付けた</h3>
-                  <p className="text-lg leading-9 text-slate-600">　設置後の安定期、プロジェクトは一定の完成度に達した一方で、チーム内にはどこか停滞感が生まれていました。そこで私は、改善を磨き続ける大切さを共有するため、あえてオープンキャンパスへの展示を提案。会場では、自分たちが作った筐体の前で、多くの人が笑い、驚き、楽しむ姿を直接目にすることができました。画面上の数値や評価ではなく、目の前のユーザの「楽しさ」や「喜び」を実感できたことが、チームの意識を大きく変えました。この体験をきっかけに、「もっと良くしたい」「最高の形で届けたい」という思いが再びチームに火を灯し、現在の完成度、そして企業賞の受賞へとつながっています。</p>
+                  <p className="text-lg leading-9 text-slate-600">　設置後の安定期、プロジェクトは一定の完成度に達した一方で、チーム内にはどこか停滞感が生まれていました。そこで、改善を磨き続ける大切さを共有するために、あえてオープンキャンパスへの展示を提案。会場では、自分たちが作った筐体の前で、多くの人が笑い、驚き、楽しむ姿を直接目にすることができました。画面上の数値や評価ではなく、目の前のユーザの「楽しさ」や「喜び」を実感できたことが、チームの意識を大きく変えました。この体験をきっかけに、「もっと良くしたい」「最高の形で届けたい」という思いが再びチームに火を灯し、現在の完成度、そして企業賞の受賞へとつながっています。</p>
                 </div>
               </div>
             </div>

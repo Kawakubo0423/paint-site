@@ -101,16 +101,34 @@ export default function Home() {
   // 【追加】フルプレイ動画モーダル用のState
   const [isFullPlayOpen, setIsFullPlayOpen] = useState(false);
   const [fullPlayTab, setFullPlayTab] = useState<"screen" | "external">("screen");
+  const [contentKey, setContentKey] = useState(0);
 
   // 【修正】自動ズームの useEffect は削除、または初期表示のフェードインのみに変更
   useEffect(() => {
     // ページ読み込み時に何か初期化が必要ならここで行う
   }, []);
 
-  // ズーム終了後にイントロUIを完全に削除するハンドラ
+
+// 【修正】イントロ完了時の処理（フラグ保存を削除）
   const handleIntroComplete = () => {
     setShowIntro(false);
   };
+
+const handleLogoClick = (e: React.MouseEvent) => {
+  e.stopPropagation(); // 親要素（header）へのイベント伝播を防止
+  e.preventDefault();
+  
+  // 1. まずトップへ戻す
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  
+  // 2. 状態を整理
+  setShowIntro(false);
+  setShouldRenderContent(true); // コンテンツを表示状態にする
+  
+  // 3. Keyを更新（これにより、このKeyを持つ全要素がリセットされ、アニメーションが再始動します）
+  setContentKey(prev => prev + 1);
+};
+
   const handleStart = () => {
     if (!isZooming) {
       setIsZooming(true);
@@ -336,7 +354,7 @@ export default function Home() {
                       duration: 2.0,             // 筐体のズーム時間(2.0)と一致
                       ease: [0.1, 0.1, 0.4, 1.0],  // 筐体のズームイージングと完全に一致
                     }}
-                    className="relative w-full h-full scale-[0.7]" // 枠より少し大きくして端を見せない
+                    className="relative w-full h-full scale-[0.5]" // 枠より少し大きくして端を見せない
                   >
                     <Image
                       src="/images/vortex1.png" 
@@ -408,6 +426,7 @@ export default function Home() {
 
       <motion.div
           // イントロが完全に終わる（showIntroがfalseになる）までは非表示にしておく
+          key={contentKey}
           initial={{ opacity: 0, scale: 1.3, filter: "blur(20px)" }}
           animate={!showIntro ? { 
             opacity: 1, 
@@ -424,6 +443,7 @@ export default function Home() {
         {/* コンテンツが表示される瞬間の残光演出 */}
         {!showIntro && (
           <motion.div
+            key={`after-flash-${contentKey}`}
             initial={{ opacity: 1, scale: 0.8 }}
             animate={{ opacity: 0, scale: 2 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
@@ -436,7 +456,10 @@ export default function Home() {
         style={{ opacity: headerOpacity, y: headerY }}
         className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm py-3 px-6 flex justify-between items-center"
       >
-        <div className="relative w-24 h-9 mb-1">
+        <div 
+          className="relative w-24 h-9 mb-1 cursor-pointer" 
+          onClick={handleLogoClick} // ロゴをクリックした時だけリセット
+        >
           <Image src="/images/logo1.jpg" alt="pAInt Logo" fill className="object-contain scale-[1.7] origin-left" />
         </div>
         <nav className="hidden md:flex gap-6 text-sm font-bold text-slate-600">
@@ -571,29 +594,33 @@ export default function Home() {
             あそびかた
           </h2>
 
-          {/* 既存のSTEPカードグリッド */}
-          <div className="grid md:grid-cols-3 gap-5 mb-20">
+          {/* 3 STEPカード */}
+          <div className="grid md:grid-cols-3 gap-8 mb-24">
             {howToPlayDetails.map((step) => (
               <motion.div 
-                key={step.id}
+                key={step.id} 
                 whileHover={{ y: -10 }} 
-                className={`bg-white p-6 rounded-3xl shadow-lg border-b-8 ${step.borderColor} relative overflow-hidden flex flex-col`}
+                // border-slate-100(極薄) から border-2 border-slate-200(標準的) に強化
+                className={`bg-slate-50 p-6 rounded-[40px] shadow-lg border-2 ${step.borderColor} border-b-8 relative overflow-hidden flex flex-col`}
               >
-                <div className={`absolute top-0 left-0 ${step.id === 1 ? 'bg-red-500' : step.id === 2 ? 'bg-blue-500' : 'bg-yellow-500'} text-white font-black px-4 py-2 rounded-br-2xl text-lg`}>
+                <div className={`absolute top-0 left-0 ${step.id === 1 ? 'bg-red-500' : step.id === 2 ? 'bg-blue-500' : 'bg-yellow-500'} text-white font-black px-5 py-2 rounded-br-[25px] text-lg`}>
                   STEP {step.id}
                 </div>
-                <div className="mt-8 mb-4 h-48 relative rounded-xl overflow-hidden bg-slate-100">
+                
+                {/* 画像枠も border-slate-200 で少し強調 */}
+                <div className="mt-8 mb-4 h-48 relative rounded-[30px] overflow-hidden bg-white shadow-inner border border-slate-200">
                   <Image src={`/images/step${step.id}.jpg`} alt={step.title} fill className="object-cover" />
                 </div>
-                <h3 className={`text-xl font-bold ${step.color} mb-2`}>{step.title}</h3>
-                <p className="text-slate-600 text-sm mb-6 flex-grow">
+                
+                <h3 className={`text-xl font-black ${step.color} mb-2`}>{step.title}</h3>
+                <p className="text-slate-500 text-sm mb-6 flex-grow font-bold leading-relaxed">
                   {step.id === 1 && "制限時間内に好きなイキモノを描こう。AIがどんなイキモノか見てくれるぞ。"}
                   {step.id === 2 && "「陸(グー)」「海(パー)」「空(チョキ)」の3すくみバトル！タイプを見極めろ。"}
                   {step.id === 3 && "バトル後はQRコードで図鑑をゲット。LINEでいつでも見返せる！"}
                 </p>
                 <button 
-                  onClick={() => setSelectedStep(step.id)}
-                  className={`w-full py-3 rounded-xl font-bold text-white transition-opacity hover:opacity-90 shadow-md ${step.id === 1 ? 'bg-red-500' : step.id === 2 ? 'bg-blue-500' : 'bg-yellow-500'}`}
+                  onClick={() => setSelectedStep(step.id)} 
+                  className={`w-full py-4 rounded-[20px] font-black text-white transition-all cursor-pointer hover:brightness-110 shadow-lg ${step.id === 1 ? 'bg-red-500' : step.id === 2 ? 'bg-blue-500' : 'bg-yellow-500'}`}
                 >
                   詳しく見る
                 </button>
@@ -629,7 +656,7 @@ export default function Home() {
                     </div>
                     <h3 className={`text-2xl font-black mb-2 ${mode.color}`}>{mode.title}</h3>
                     <p className="text-slate-400 font-bold mb-6">{mode.subtitle}</p>
-                    <button className={`mt-auto px-6 py-2 rounded-full border-2 ${mode.color.replace('text-', 'border-')} ${mode.color} font-black text-sm group-hover:bg-white transition-colors`}>
+                    <button className={`mt-auto px-6 py-2 rounded-full cursor-pointer border-2 ${mode.color.replace('text-', 'border-')} ${mode.color} font-black text-sm group-hover:bg-white transition-colors`}>
                       詳細を見る
                     </button>
                   </motion.div>
@@ -641,8 +668,8 @@ export default function Home() {
           {/* --- 【修正箇所】統合ビデオショーケース：3つの視点を1つに --- */}
           <div className="mt-18 max-w-5xl mx-auto">
             <div className="text-center mb-4">
-              <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-2 italic uppercase tracking-tighter">
-                Gameplay Showcase
+              <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-2 uppercase tracking-tighter">
+                プレイ映像
               </h3>
               <p className="text-slate-400 font-bold text-xs tracking-widest">
                 3つの視点から見る「pAInt」の世界
@@ -802,13 +829,13 @@ export default function Home() {
                 <div className="flex gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/5">
                   <button 
                     onClick={() => setFullPlayTab("screen")}
-                    className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${fullPlayTab === "screen" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                    className={`px-6 py-2.5 rounded-xl font-bold cursor-pointer text-sm transition-all ${fullPlayTab === "screen" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                   >
                     プレイ映像（フル）
                   </button>
                   <button 
                     onClick={() => setFullPlayTab("external")}
-                    className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${fullPlayTab === "external" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                    className={`px-6 py-2.5 rounded-xl font-bold cursor-pointer text-sm transition-all ${fullPlayTab === "external" ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                   >
                     実際のプレイの様子
                   </button>
@@ -950,7 +977,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full md:w-auto flex justify-center flex-shrink-0 relative z-30"
             >
-              <div className="relative w-48 h-48 md:w-72 md:h-72 bg-white rounded-full border-[10px] border-white overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.12)]">
+              <div className="relative w-48 h-48 md:w-72 md:h-72 bg-white rounded-full border-[10px] border-black-100 overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.12)]">
                 <Image src="/images/hakase.jpg" alt="Hakase" fill className="object-cover" />
               </div>
             </motion.div>
@@ -973,7 +1000,7 @@ export default function Home() {
                    AIの思考を読み解くのじゃ！
                 </h3>
                 <p className="text-base md:text-lg font-bold text-slate-600 leading-relaxed mb-10">
-                  ワシは「ペイント博士」じゃ。AIはキミの描いたイキモノの見た目や色などを見て、名前や技名、タイプを決定しておる。それぞれの傾向を教えてやろう。
+                  ワシは「ペイント博士」じゃ。AIはキミの描いたイキモノの見た目や色などを見て、イキモノの名前や技名、タイプを決定しておる。それぞれの傾向を教えてやろう。
                 </p>
                 
                 {/* 3属性の傾向 */}
@@ -1077,9 +1104,9 @@ export default function Home() {
             <div className="mt-7 pt-10 border-t-2 border-slate-50">
               <div className="bg-slate-900 text-white p-10 md:p-16 rounded-[50px] relative overflow-hidden shadow-2xl">
                 <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent pointer-events-none" />
-                <h4 className="text-2xl md:text-4xl font-black mb-6 italic tracking-tight">The Core Strategy: 予測の先にある勝利</h4>
+                <h4 className="text-2xl md:text-4xl font-black mb-6 italic tracking-tight">Key-Point：予測の先にある勝利</h4>
                 <p className="text-lg md:text-xl font-bold text-slate-300 leading-9 text-justify">
-                  　バトルのルールはシンプルだが、<span className="text-blue-400 underline decoration-2 underline-offset-8">相手のタイプが見えない</span>ことが、このゲームを高度な心理戦へと変える。相手が描いた絵、AIが選んだ名前、そして技名。AIが何を読み取ったかを予測し、誰よりも早く最適な一撃を導き出すのじゃ。
+                  バトルのルールはシンプルだが、<span className="text-blue-400 underline decoration-2 underline-offset-8">相手のタイプが見えない</span>ことが、このゲームを高度な心理戦へと変える。相手が描いた絵、AIが選んだ名前、そして技名。AIが何を読み取ったかを予測し、誰よりも早く最適な一撃を導き出すのじゃ。
                 </p>
               </div>
             </div>
