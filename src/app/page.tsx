@@ -977,7 +977,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
               viewport={{ once: true }}
               className="w-full md:w-auto flex justify-center flex-shrink-0 relative z-30"
             >
-              <div className="relative w-48 h-48 md:w-72 md:h-72 bg-white rounded-full border-[10px] border-black-100 overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.12)]">
+              <div className="relative w-48 h-48 md:w-72 md:h-72 bg-white rounded-full border-[10px] overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.12)]">
                 <Image src="/images/hakase.jpg" alt="Hakase" fill className="object-cover" />
               </div>
             </motion.div>
