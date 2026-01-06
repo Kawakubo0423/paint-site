@@ -392,7 +392,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
               >
                 <motion.div
                   animate={{ opacity: [1, 0] }} 
-                  transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                  transition={{ duration: 0.9, repeat: Infinity, repeatType: "reverse" }}
                   style={{ top: "35%" }}
                   className="absolute bg-black/80 px-6 py-3 rounded-lg border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] flex flex-col items-center"
                 >
