@@ -49,7 +49,7 @@ const howToPlayDetails = [
     title: "描く (Draw)",
     color: "text-red-500",
     borderColor: "border-red-500",
-    video: "/videos/step1_demo.mp4", // 動画ファイルのパス
+    video: "/videos/draw.mp4", // 動画ファイルのパス
     description: "キャンバスに自由にイキモノを描いてみよう！描き終わるとAIがリアルタイムで画像を解析。「〇〇っぽい名前」「この足の形は陸タイプ」といったように、見た目から「名前」「タイプ」、さらに「3つの技名」を考えてくれるぞ。"
   },
   {
@@ -57,7 +57,7 @@ const howToPlayDetails = [
     title: "戦う (Battle)",
     color: "text-blue-500",
     borderColor: "border-blue-500",
-    video: "/videos/step2_demo.mp4",
+    video: "/videos/battle.mp4",
     description: "ジャンケンをベースにした戦略バトル！　「陸がグー、空がチョキ、海がパー」に対応しており、使う技と相手のタイプによって威力が変わるぞ。さらに、自分のタイプと同じ技を使うと威力がアップ。相手の見た目からタイプを予想して、有利な技を叩き込め！"
   },
   {
@@ -65,7 +65,7 @@ const howToPlayDetails = [
     title: "集める (Get)",
     color: "text-yellow-500",
     borderColor: "border-yellow-500",
-    video: "/videos/step3_demo.mp4",
+    video: "/videos/feedback.mp4",
     description: "バトルが終わったら、キミのイキモノが世界に一冊の『図鑑』になるぞ。図鑑にはAIからの説明もあるぞ。表示されたQRコードをスマホで読み取れば、公式LINEから画像を保存可能。友達と見せ合ったり、次回のバトルの研究に役立てよう！"
   }
 ];
@@ -929,15 +929,15 @@ const handleLogoClick = (e: React.MouseEvent) => {
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className="aspect-video bg-slate-900 rounded-2xl overflow-hidden relative shadow-inner">
                     {/* 動画の実装例（動画ファイルがない場合はImageやYouTubeを配置） */}
-                    <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
+                    {/* <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
                       <p className="px-4 text-center opacity-50">ここに実際のゲーム映像<br/>(demo_video.mp4)を表示</p>
-                    </div>
-                    {/* <video 
+                    </div> */}
+                    { <video 
                       src={howToPlayDetails[selectedStep-1].video} 
                       autoPlay loop muted playsInline 
                       className="w-full h-full object-cover"
                     /> 
-                    */}
+                    }
                   </div>
                   <div>
                     <p className="text-slate-600 leading-relaxed font-bold">
