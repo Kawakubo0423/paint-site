@@ -701,7 +701,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
                   <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-yellow-400 group-hover:border-yellow-400 transition-all duration-300">
                     <span className="text-3xl ml-1 group-hover:text-slate-900 transition-colors">▶</span>
                   </div>
-                  <p className="mt-6 font-black tracking-[0.3em] text-sm group-hover:scale-110 transition-transform">PLAY PV (15s)</p>
+                  <p className="mt-6 font-black tracking-[0.3em] text-sm group-hover:scale-110 transition-transform">PLAY PV</p>
                 </div>
                 <div className="absolute top-6 right-6 flex items-center gap-2 bg-black/40 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/20">
                   <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -797,7 +797,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
               </button>
 
               <video 
-                src="/videos/pv_15s.mp4" 
+                src="/videos/pAInt-PV.mp4" 
                 autoPlay 
                 controls
                 className="w-full h-full object-contain"
@@ -846,9 +846,9 @@ const handleLogoClick = (e: React.MouseEvent) => {
               {/* ビデオエリア */}
               <div className="flex-grow bg-black flex items-center justify-center overflow-hidden p-4">
                 {fullPlayTab === "screen" ? (
-                  <video key="screen-video" src="/videos/pv_15s.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+                  <video key="screen-video" src="/videos/full.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
                 ) : (
-                  <video key="external-video" src="/videos/pv_15s.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+                  <video key="external-video" src="/videos/tablet.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
                 )}
               </div>
               
