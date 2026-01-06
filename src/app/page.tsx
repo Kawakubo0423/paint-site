@@ -72,11 +72,24 @@ const howToPlayDetails = [
 
 // --- 図鑑のサンプルデータ ---
 const monsters = [
-  { id: 1, name: "マグマザウルス", type: "陸", image: "/monster/monster1.png", color: "bg-red-100 text-red-600" },
-  { id: 2, name: "スプラッシュドラコ", type: "海", image: "/monster/monster2.png", color: "bg-blue-100 text-blue-600" },
-  { id: 3, name: "サンダーグリフォン", type: "空", image: "/images/monster3.png", color: "bg-yellow-100 text-yellow-600" },
-  { id: 4, name: "ロックゴーレム", type: "海", image: "/images/monster4.png", color: "bg-red-100 text-red-600" },
-  { id: 5, name: "アクアサーペント", type: "海", image: "/images/monster5.png", color: "bg-blue-100 text-blue-600" },
+  { id: 1, name: "ニコニコ", type: "陸", image: "/monster/monster1.png", color: "bg-red-100 text-red-600" },
+  { id: 2, name: "ファイアーサメ", type: "海", image: "/monster/monster2.png", color: "bg-blue-100 text-blue-600" },
+  { id: 3, name: "くもじい", type: "空", image: "/monster/monster3.png", color: "bg-yellow-100 text-yellow-600" },
+  { id: 4, name: "リンツリー", type: "陸", image: "/monster/monster4.png", color: "bg-red-100 text-red-600" },
+  { id: 5, name: "カニタロウ", type: "海", image: "/monster/monster5.png", color: "bg-blue-100 text-blue-600" },
+  { id: 6, name: "ひこうネコ", type: "空", image: "/monster/monster6.png", color: "bg-yellow-100 text-yellow-600" },
+  { id: 7, name: "ムカデモン", type: "陸", image: "/monster/monster7.png", color: "bg-red-100 text-red-600" },
+  { id: 8, name: "シュワシュワン", type: "海", image: "/monster/monster8.png", color: "bg-blue-100 text-blue-600" },
+  { id: 9, name: "くもまる", type: "空", image: "/monster/monster9.png", color: "bg-yellow-100 text-yellow-600" },
+  { id: 10, name: "チューチュー", type: "陸", image: "/monster/monster10.png", color: "bg-red-100 text-red-600" },
+  { id: 11, name: "うみのおひめさま", type: "海", image: "/monster/monster11.png", color: "bg-blue-100 text-blue-600" },
+  { id: 12, name: "ドラゴン", type: "空", image: "/monster/monster12.png", color: "bg-yellow-100 text-yellow-600" },
+  { id: 13, name: "ニャンコドラゴン", type: "陸", image: "/monster/monster13.png", color: "bg-red-100 text-red-600" },
+  { id: 14, name: "アクアロード", type: "海", image: "/monster/monster14.png", color: "bg-blue-100 text-blue-600" },
+  { id: 15, name: "スマイルくん", type: "空", image: "/monster/monster15.png", color: "bg-yellow-100 text-yellow-600" },
+  { id: 16, name: "くろがねまん", type: "陸", image: "/monster/monster16.png", color: "bg-red-100 text-red-600" },
+  { id: 17, name: "モンキーフィッシュ", type: "海", image: "/monster/monster17.png", color: "bg-blue-100 text-blue-600" },
+  { id: 18, name: "ひのたまちゃん", type: "空", image: "/monster/monster18.png", color: "bg-yellow-100 text-yellow-600" },
 ];
 
 // --- グラフ用データ ---
