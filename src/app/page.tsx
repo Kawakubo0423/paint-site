@@ -702,14 +702,14 @@ const handleLogoClick = (e: React.MouseEvent) => {
                 // 修正後の例（少し縦長）:
                 style={{ aspectRatio: "16 / 10" }}
               >
-                <video
-                  src="/videos/pv_15s.mp4"
-                  loop
-                  muted
-                  playsInline
-                  onLoadedMetadata={handleVideoLoad}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
-                />
+              <video
+                src="/videos/pv_15s.mp4"
+                loop
+                muted
+                playsInline
+                onLoadedMetadata={handleVideoLoad}
+                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+              />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                   <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-yellow-400 group-hover:border-yellow-400 transition-all duration-300">
                     <span className="text-3xl ml-1 group-hover:text-slate-900 transition-colors">▶</span>
@@ -810,7 +810,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
               </button>
 
               <video 
-                src="/videos/pAInt-PV.mp4" 
+                src="/videos/pv_15s.mp4" 
                 autoPlay 
                 controls
                 className="w-full h-full object-contain"
