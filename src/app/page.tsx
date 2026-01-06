@@ -702,12 +702,17 @@ const handleLogoClick = (e: React.MouseEvent) => {
                 // 修正後の例（少し縦長）:
                 style={{ aspectRatio: "16 / 10" }}
               >
-              <iframe
-                  src={`https://www.youtube.com/embed/6IW-o5N2CUs?autoplay=1&mute=1&loop=1&playlist=6IW-o5N2CUs&controls=0&modestbranding=1`}
-                  className="w-full h-full pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity scale-[1.2]"
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                />
+                {/* YouTubeのiframeではなく、高画質のサムネイル画像を背景にする */}
+                <div className="absolute inset-0 w-full h-full">
+                  <Image
+                    // YouTubeの動画IDを入れることで、自動的に最高画質のサムネイルを表示します
+                    src={`https://img.youtube.com/vi/6IW-o5N2CUs/maxresdefault.jpg`}
+                    alt="PV Thumbnail"
+                    fill
+                    className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                    priority
+                  />
+                </div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                   <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-yellow-400 group-hover:border-yellow-400 transition-all duration-300">
                     <span className="text-3xl ml-1 group-hover:text-slate-900 transition-colors">▶</span>
