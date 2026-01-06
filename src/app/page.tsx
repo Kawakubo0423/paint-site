@@ -72,8 +72,8 @@ const howToPlayDetails = [
 
 // --- 図鑑のサンプルデータ ---
 const monsters = [
-  { id: 1, name: "マグマザウルス", type: "陸", image: "/images/monster1.png", color: "bg-red-100 text-red-600" },
-  { id: 2, name: "スプラッシュドラコ", type: "海", image: "/images/monster2.png", color: "bg-blue-100 text-blue-600" },
+  { id: 1, name: "マグマザウルス", type: "陸", image: "/monster/monster1.png", color: "bg-red-100 text-red-600" },
+  { id: 2, name: "スプラッシュドラコ", type: "海", image: "/monster/monster2.png", color: "bg-blue-100 text-blue-600" },
   { id: 3, name: "サンダーグリフォン", type: "空", image: "/images/monster3.png", color: "bg-yellow-100 text-yellow-600" },
   { id: 4, name: "ロックゴーレム", type: "海", image: "/images/monster4.png", color: "bg-red-100 text-red-600" },
   { id: 5, name: "アクアサーペント", type: "海", image: "/images/monster5.png", color: "bg-blue-100 text-blue-600" },
@@ -843,14 +843,27 @@ const handleLogoClick = (e: React.MouseEvent) => {
                 <button onClick={() => setIsFullPlayOpen(false)} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-white text-sm font-bold transition-colors">閉じる ✕</button>
               </div>
 
-              {/* ビデオエリア */}
               <div className="flex-grow bg-black flex items-center justify-center overflow-hidden p-4">
-                {fullPlayTab === "screen" ? (
-                  <video key="screen-video" src="/videos/full.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
-                ) : (
-                  <video key="external-video" src="/videos/tablet.mp4" controls className="max-w-full max-h-full rounded-2xl shadow-2xl" />
-                )}
-              </div>
+          {fullPlayTab === "screen" ? (
+            <iframe
+              key="screen-video"
+              src={`https://www.youtube.com/embed/7CFaNds_HW0?autoplay=1&rel=0`}
+              className="w-full h-full max-w-full max-h-full rounded-2xl shadow-2xl"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          ) : (
+            <iframe
+              key="external-video"
+              src={`https://www.youtube.com/embed/9TcW7UA0ZP8?autoplay=1&rel=0`}
+              className="w-full h-full max-w-full max-h-full rounded-2xl shadow-2xl"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          )}
+        </div>
               
               <div className="p-6 bg-slate-900/30 text-center">
                 <p className="text-slate-400 text-xs font-bold tracking-widest uppercase">Full Gameplay Showcase (approx. 5m)</p>
