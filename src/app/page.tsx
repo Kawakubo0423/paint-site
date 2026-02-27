@@ -580,7 +580,7 @@ const handleLogoClick = (e: React.MouseEvent) => {
             <div className="relative rotate-2 hover:rotate-0 transition-transform duration-500 group">
               <div className="absolute inset-0 bg-slate-800 rounded-3xl transform translate-x-3 translate-y-3 group-hover:translate-x-1 group-hover:translate-y-1 transition-all"></div>
               <Image
-                src="/images/about.png"
+                src="/images/about1.png"
                 alt="Game Arcade"
                 width={600}
                 height={400}
